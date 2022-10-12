@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:homework/screens/home.dart';
-import 'package:homework/screens/charts.dart';
-import 'package:homework/screens/library.dart';
+import 'package:flutter_project/screens/account.dart';
+import 'package:flutter_project/screens/home_page.dart';
+import 'package:flutter_project/screens/search.dart';
+import 'package:flutter_project/screens/shopping_cart.dart';
 
 class TabBarMenu extends StatefulWidget {
   const TabBarMenu({super.key});
@@ -15,9 +16,10 @@ class _TabBarMenuState extends State<TabBarMenu> {
 
   //divisão em três páginas, através de uma bottomNavigationBar
   static const List<Widget> _widgetOptions = <Widget>[
-    Home(),
-    Charts(),
-    Library(),
+    HomePage(),
+    Search(),
+    ShoppingCart(),
+    Account()
   ];
 
   void _onItemTapped(int index) {
@@ -31,24 +33,31 @@ class _TabBarMenuState extends State<TabBarMenu> {
     return Scaffold(
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: true,
+        unselectedFontSize: 11.0,
+        selectedFontSize: 11.0,
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Ínicio',
+            icon: Icon(Icons.home),
+            label: 'Página Inicial',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.music_note_outlined),
-            activeIcon: Icon(Icons.music_note),
-            label: 'Populares',
+            icon: Icon(Icons.manage_search),
+            label: 'Procurar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.library_music_outlined),
-            label: 'Biblioteca',
-            activeIcon: Icon(Icons.library_music),
+            icon: Icon(Icons.shopping_cart),
+            label: 'Carrinhos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Conta',
           ),
         ],
         currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Color.fromARGB(255, 100, 100, 100),
         onTap: _onItemTapped,
       ),
     );
