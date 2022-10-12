@@ -9,18 +9,13 @@ const sequelize = new Sequelize(
        dialect: 'mysql'
      }
    );
-   
-sequelize
-	.authenticate()
-	.then(() => {
-		console.log("Connection has been established successfully.");
-	})
-	.catch((error) => {
-		console.error("Unable to connect to the database: ", error);
-	});
 
-const Client = sequelize.define("client", {
-	name: {
+const client = sequelize.define("client", {
+	first_name: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	last_name: {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
@@ -32,13 +27,19 @@ const Client = sequelize.define("client", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
+	email: {
+		type: DataTypes.STRING,
+		allowNull: false,
+		unique: true
+	},
+	password: {
+		type: DataTypes.STRING,
+		allowNull: false,
+		unique: true
+	},
+	token: {
+		type: DataTypes.STRING,
+	}
 });
 
-sequelize
-	.sync()
-	.then(() => {
-		console.log("Client table created successfully!");
-	})
-	.catch((error) => {
-		console.error("Unable to create table : ", error);
-	});
+module.exports = sequelize.model("client", client)
