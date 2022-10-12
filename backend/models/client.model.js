@@ -1,5 +1,6 @@
+//const sequelize = require('../server.js');
+//const DataTypes = require('sequelize');
 const { Sequelize, DataTypes } = require("sequelize");
-
 const sequelize = new Sequelize(
     'proj1',
     'root',

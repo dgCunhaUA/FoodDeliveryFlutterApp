@@ -1,10 +1,3 @@
-const { Sequelize, DataTypes } = require("sequelize");
-
-const sequelize = new Sequelize("proj1", "root", "root", {
-	host: "localhost",
-	dialect: "mysql",
-});
-
 const Client = require("../models/client.model");
 
 const bcrypt = require("bcryptjs");
