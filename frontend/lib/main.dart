@@ -1,7 +1,7 @@
 // Created by: Simão Bentes, 97761
 
 import 'package:flutter/material.dart';
-import 'package:flutter_project/widgets/tabbar_menu.dart';
+import 'package:flutter_project/screens/login.dart';
 
 void main() {
   runApp(const App());
@@ -15,7 +15,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'FoodDelivery',
       theme: ThemeData(useMaterial3: true, primarySwatch: Colors.green),
-      home: const TabBarMenu(),
+      home: const LoginScreen(),
     );
   }
 }

@@ -9,3 +9,8 @@ $ mysql -u root
 criar db "proj1"
 
 mysql> CREATE DATABASE proj1;
+
+
+
+$ node client.model.js
+...
