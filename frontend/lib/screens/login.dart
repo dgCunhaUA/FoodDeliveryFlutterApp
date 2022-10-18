@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/screens/register.dart';
 
 import '../services/storage.dart';
 import '../utils/validator.dart';
@@ -50,10 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       if (res.statusCode == 200) {
-        //String accessToken = res['access_token'];
-        //print(res);
-        //print(accessToken);
-
         // ignore: use_build_context_synchronously
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const TabBarMenu()));
@@ -178,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const TabBarMenu()))),
+                                              const RegisterScreen()))),
                                   style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           borderRadius:

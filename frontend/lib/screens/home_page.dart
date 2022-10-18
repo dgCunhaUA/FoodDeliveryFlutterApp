@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/login.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../services/storage.dart';
-import '../widgets/tabbar_menu.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,7 +26,6 @@ class _HomePageState extends State<HomePage> {
             }
           else
             {
-              print("....."),
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()))
             }
@@ -39,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        children: [Text("FoodDelivery"), Text(_token)],
+        children: [const Text("FoodDelivery"), Text(_token)],
       ),
     );
   }
