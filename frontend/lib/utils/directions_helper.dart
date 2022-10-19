@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/api.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -40,5 +42,13 @@ class DirectionsHelper {
     );
 
     return routePolyline;
+  }
+
+  Future<LatLng> getCoords(destinationAddress) async {
+    GeoJsonFeatureCollection coords =
+        await client.geocodeSearchGet(text: destinationAddress);
+
+    return LatLng(coords.features[0].geometry.coordinates[0][0].latitude,
+        coords.features[0].geometry.coordinates[0][0].longitude);
   }
 }

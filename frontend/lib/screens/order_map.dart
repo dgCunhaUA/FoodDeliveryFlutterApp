@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import '../utils/directions_helper.dart';
-import '../utils/findLatLng.dart';
 
 class OrderMap extends StatefulWidget {
   final String destinationAddress;
@@ -24,7 +23,7 @@ class _OrderMapState extends State<OrderMap> {
   CameraPosition _initialPosition =
       const CameraPosition(target: LatLng(0, 0), zoom: 15);
 
-  final LatLng _destination = const LatLng(40.627148, -8.645729);
+  LatLng _destination = const LatLng(40.627148, -8.645729);
 
   List<LatLng> polylineCoordinates = [];
   final List<LatLng> polyPoints = []; // For holding Co-ordinates as LatLng
@@ -33,10 +32,19 @@ class _OrderMapState extends State<OrderMap> {
 
   @override
   void initState() {
-    _getCurrentLocation();
-    //getCurrentPosition();
+    _getDestCoords();
 
     super.initState();
+  }
+
+  void _getDestCoords() async {
+    DirectionsHelper dirHelper =
+        DirectionsHelper(startLat: 0, startLng: 0, endLat: 0, endLng: 0);
+
+    _destination = await dirHelper.getCoords(widget.destinationAddress);
+    setState(() {});
+
+    _getCurrentLocation();
   }
 
   void _getCurrentLocation() {
@@ -86,8 +94,9 @@ class _OrderMapState extends State<OrderMap> {
 
     setState(() {
       if (result.points.isNotEmpty) {
-        result.points.forEach((PointLatLng point) =>
-            polylineCoordinates.add(LatLng(point.latitude, point.longitude)));
+        for (var point in result.points) {
+          polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        }
       }
     });
   }

@@ -9,7 +9,7 @@ final item = [
     "time": 26,
     "distance": 4.7,
     "restaurant": "La Grotta",
-    "destination": "Rua João Afonso 17"
+    "destination": "Universidade de Aveiro, 3810-193 Aveiro"
   }
 ];
 
