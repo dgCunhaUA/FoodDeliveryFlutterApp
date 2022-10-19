@@ -35,7 +35,7 @@ class _AccountState extends State<Account> {
         Container(
           height: MediaQuery.of(context).size.width * 0.75,
           width: MediaQuery.of(context).size.width,
-          color: Colors.black12,
+          color: Colors.grey[300],
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,7 +66,7 @@ class _AccountState extends State<Account> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Addresses:",
+                "Address:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const Divider(),
