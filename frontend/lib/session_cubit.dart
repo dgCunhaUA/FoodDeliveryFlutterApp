@@ -12,6 +12,8 @@ class SessionCubit extends Cubit<SessionState> {
     attemptAutoLogin();
   }
 
+  User get currentUser => (state as Authenticated).user;
+
   void attemptAutoLogin() async {
     try {
       User? user = await userRepo.getUser();

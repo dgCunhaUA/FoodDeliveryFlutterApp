@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/account.dart';
+import 'package:flutter_project/profile/profile_screen.dart';
 import 'package:flutter_project/screens/home_page.dart';
 import 'package:flutter_project/screens/search.dart';
 import 'package:flutter_project/screens/orders.dart';
@@ -20,7 +20,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
   //divisão em três páginas, através de uma bottomNavigationBar
   static const List<Widget> _widgetOptions = driver_mode
       ? <Widget>[Orders(), Wallet()]
-      : <Widget>[HomePage(), Search(), ShoppingCart(), Account()];
+      : <Widget>[HomePage(), Search(), ShoppingCart(), ProfileScreen()];
 
   void _onItemTapped(int index) {
     setState(() {
