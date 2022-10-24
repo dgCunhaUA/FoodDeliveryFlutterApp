@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   initState() {
     super.initState();
 
+    // ignore: todo
     // TODO: Check if token is valid
     storage.getToken().then(((token) => {
           if (token != null)
