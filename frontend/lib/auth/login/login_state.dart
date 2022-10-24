@@ -3,7 +3,7 @@ import 'package:flutter_project/auth/form_submission_status.dart';
 class LoginState {
   final String email;
   final String password;
-  final FormSubmissionStatus formStatus;
+  FormSubmissionStatus formStatus;
 
   LoginState({
     this.email = '',

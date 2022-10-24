@@ -1,15 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_project/auth/auth_event.dart';
-import 'package:flutter_project/auth/auth_state.dart';
+import 'package:flutter_project/auth/login/login_event.dart';
 import 'package:flutter_project/auth/form_submission_status.dart';
+import 'package:flutter_project/auth/login/login_state.dart';
 import 'package:flutter_project/repositories/user_repository.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
+import '../../models/User.dart';
+import '../auth_credentials.dart';
+import '../auth_cubit.dart';
+
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserRepository userRepo;
-  //final AuthCubit authCubit;
+  final AuthCubit authCubit;
 
-  LoginBloc({required this.userRepo}) : super(LoginState()) {
+  LoginBloc({required this.userRepo, required this.authCubit})
+      : super(LoginState()) {
     on<LoginEvent>(
       (event, emit) {
         if (event is LoginEmailChanged) {
@@ -39,19 +44,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(formStatus: FormSubmitting()));
 
     try {
-      /* final userId =  */
-      await userRepo.login(
+      User user = await userRepo.login(
         email: state.email,
         password: state.password,
       );
-      emit(state.copyWith(formStatus: SubmissionSuccess()));
+      //emit(state.copyWith(formStatus: SubmissionSuccess()));
+      print("SubmissionSuccess");
 
-      /* authCubit.launchSession(AuthCredentials(
-          username: state.username,
-          userId: userId,
-        )); */
-    } catch (e) {
-      emit(state.copyWith(formStatus: SubmissionFailed(e as Exception)));
+      authCubit.launchSession(AuthCredentials(
+        email: state.email,
+        userId: user.id,
+      ));
+    } on Exception catch (e) {
+      print("SubmissionFailed");
+      print(e);
+      //emit(state.copyWith(formStatus: SubmissionFailed(e)));
     }
   }
 }

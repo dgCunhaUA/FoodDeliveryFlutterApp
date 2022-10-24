@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/login.dart';
+import 'package:flutter_project/screens/login_old.dart';
 import '../services/storage.dart';
+import 'login.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,33 +11,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Storage _storage = Storage();
-  String _token = "";
-
-  @override
-  initState() {
-    super.initState();
-
-    _storage.getToken().then((token) => {
-          if (token != null)
-            {
-              setState(() {
-                _token = token;
-              }),
-            }
-          else
-            {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()))
-            }
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        children: [const Text("FoodDelivery"), Text(_token)],
+        children: [const Text("FoodDelivery")],
       ),
     );
   }

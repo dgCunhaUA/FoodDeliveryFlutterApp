@@ -1,9 +1,10 @@
-// Created by: Simão Bentes, 97761
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_project/auth/login_view.dart';
+import 'package:flutter_project/auth/auth_cubit.dart';
 import 'package:flutter_project/repositories/user_repository.dart';
+import 'package:flutter_project/session_cubit.dart';
+
+import 'app_navigator.dart';
 
 /* void main() {
   runApp(const App());
@@ -34,7 +35,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: RepositoryProvider(
         create: (context) => UserRepository(),
-        child: LoginView(),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) =>
+                  SessionCubit(userRepo: context.read<UserRepository>()),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  AuthCubit(sessionCubit: context.read<SessionCubit>()),
+            ),
+          ],
+          child: const AppNavigator(),
+        ),
       ),
     );
   }
