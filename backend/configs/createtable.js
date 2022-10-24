@@ -14,17 +14,9 @@ sequelize
 		console.error("Unable to connect to the database: ", error);
 	});
 
-/* const client = sequelize.define("client", {
-	first_name: {
+const client = sequelize.define("client", {
+	name: {
 		type: DataTypes.STRING,
-		allowNull: false,
-	},
-	last_name: {
-		type: DataTypes.STRING,
-		allowNull: false,
-	},
-	birthdate: {
-		type: DataTypes.DATE,
 		allowNull: false,
 	},
 	address: {
@@ -44,7 +36,40 @@ sequelize
 	token: {
 		type: DataTypes.STRING,
 	},
-}); */
+	photo: {
+        type: DataTypes.BLOB
+    },
+});
+
+const rider = sequelize.define("rider", {
+	name: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	address: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	email: {
+		type: DataTypes.STRING,
+		allowNull: false,
+		unique: true
+	},
+	password: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+    vehicle: {
+        type: DataTypes.STRING,
+		allowNull: false,
+    },
+	token: {
+		type: DataTypes.STRING,
+	},
+	photo: {
+        type: DataTypes.BLOB
+    },
+});
 
 const restaurant = sequelize.define("restaurant", {
 	name: {
