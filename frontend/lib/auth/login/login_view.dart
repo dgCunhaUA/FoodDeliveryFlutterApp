@@ -120,7 +120,10 @@ class LoginView extends StatelessWidget {
   } */
 
   void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
+    final snackBar = SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red[600],
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

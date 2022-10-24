@@ -1,8 +1,6 @@
 class User {
   late int id;
-  late String firstName;
-  late String lastName;
-  late String birthdate;
+  late String name;
   late String address;
   late String email;
   late String password;
@@ -12,9 +10,7 @@ class User {
 
   User(
       {required this.id,
-      required this.firstName,
-      required this.lastName,
-      required this.birthdate,
+      required this.name,
       required this.address,
       required this.email,
       required this.password,
@@ -24,9 +20,7 @@ class User {
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    birthdate = json['birthdate'];
+    name = json['name'];
     address = json['address'];
     email = json['email'];
     password = json['password'];
@@ -38,9 +32,7 @@ class User {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['first_name'] = firstName;
-    data['last_name'] = lastName;
-    data['birthdate'] = birthdate;
+    data['name'] = name;
     data['address'] = address;
     data['email'] = email;
     data['password'] = password;

@@ -16,13 +16,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({required this.userRepo, required this.authCubit})
       : super(LoginState()) {
     on<LoginEvent>(
-      (event, emit) {
+      (event, emit) async {
         if (event is LoginEmailChanged) {
           _handleLoginEmailChanged(event, emit);
         } else if (event is LoginPasswordChanged) {
           _handleLoginPasswordChanged(event, emit);
         } else if (event is LoginSubmitted) {
-          _handleLoginSubmitted(event, emit);
+          await _handleLoginSubmitted(event, emit);
         }
       },
       transformer: sequential(),
@@ -39,7 +39,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(password: event.password));
   }
 
-  void _handleLoginSubmitted(
+  Future<void> _handleLoginSubmitted(
       LoginSubmitted event, Emitter<LoginState> emit) async {
     emit(state.copyWith(formStatus: FormSubmitting()));
 
@@ -48,17 +48,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         email: state.email,
         password: state.password,
       );
-      //emit(state.copyWith(formStatus: SubmissionSuccess()));
-      print("SubmissionSuccess");
+      emit(state.copyWith(formStatus: SubmissionSuccess()));
 
       authCubit.launchSession(AuthCredentials(
         email: state.email,
         userId: user.id,
       ));
     } on Exception catch (e) {
-      print("SubmissionFailed");
-      print(e);
-      //emit(state.copyWith(formStatus: SubmissionFailed(e)));
+      emit(state.copyWith(formStatus: SubmissionFailed(e)));
     }
   }
 }

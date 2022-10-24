@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/screens/register.dart';
+import 'package:flutter_project/auth/signup/signup_screen.dart';
 
 import '../services/storage.dart';
 import '../utils/validator.dart';

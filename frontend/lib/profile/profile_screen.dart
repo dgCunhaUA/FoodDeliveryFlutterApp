@@ -44,7 +44,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        state.user.firstName,
+                        state.user.name,
                         style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),

@@ -9,7 +9,6 @@ import '../models/User.dart';
 class UserRepository {
   final Dio _dio = Dio();
   final FlutterSecureStorage storage = const FlutterSecureStorage();
-  final String endpoint = '$urlAPI/client/login';
 
   Future<String?> getToken() async {
     var value = await storage.read(key: 'token');
@@ -43,7 +42,7 @@ class UserRepository {
   Future<User> login({required String email, required String password}) async {
     try {
       final response = await _dio.post(
-        endpoint,
+        '$urlAPI/client/login',
         data: {'email': email, 'password': password},
       );
 
@@ -55,10 +54,48 @@ class UserRepository {
         await _persistUser(user);
 
         return user;
-      } else {
-        throw Exception("Login Error");
       }
-    } on DioError {
+      throw Exception("Login Error");
+    } on DioError catch (e) {
+      if (e.response!.statusCode == 400) {
+        throw Exception("Password Incorreta");
+      }
+
+      throw Exception("Erro ao fazer login");
+    }
+  }
+
+  Future<User> signUp(
+      {required String email,
+      required String password,
+      required String username,
+      required String address}) async {
+    try {
+      final response = await _dio.post(
+        '$urlAPI/client/register',
+        data: {
+          'name': username,
+          'email': email,
+          'password': password,
+          'address': address,
+        },
+      );
+
+      if (response.statusCode == 201) {
+        User user = User.fromJson(response.data);
+
+        await _persistToken(user.token);
+
+        await _persistUser(user);
+
+        return user;
+      }
+      throw Exception("Erro");
+    } on DioError catch (e) {
+      if (e.response!.statusCode == 409) {
+        throw Exception("Email já utilizado");
+      }
+
       throw Exception("Erro ao fazer login");
     }
   }
