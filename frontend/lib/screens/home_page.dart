@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/login.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_project/utils/restaurants_info.dart';
+import 'package:flutter_project/widgets/restaurant_card.dart';
 import '../services/storage.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +17,8 @@ class _HomePageState extends State<HomePage> {
   String _token = "";
 
   @override
+
+  /*
   initState() {
     super.initState();
 
@@ -32,11 +37,31 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
+*/
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [const Text("FoodDelivery"), Text(_token)],
+    return CupertinoPageScaffold(
+      child: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            CupertinoSliverNavigationBar(
+              largeTitle: Text('Restaurantes'),
+            )
+          ];
+        },
+        body: Center(
+          child: Container(
+            child: ListView.builder(
+              itemCount: restaurants.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: RestaurantCard(info: restaurants[index]),
+                );
+              },
+            ),
+          ),
+        ),
       ),
     );
   }
