@@ -33,7 +33,8 @@ class AppNavigator extends StatelessWidget {
             ),
 
           // Show session flow
-          if (state is Authenticated) const MaterialPage(child: TabBarMenu())
+          if (state is ClientAuthenticated)
+            const MaterialPage(child: TabBarMenu())
         ],
         onPopPage: (route, result) => route.didPop(result),
       );

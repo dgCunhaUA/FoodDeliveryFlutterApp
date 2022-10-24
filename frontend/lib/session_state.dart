@@ -8,9 +8,14 @@ class UnknownSessionState extends SessionState {}
 
 class Unauthenticated extends SessionState {}
 
-class Authenticated extends SessionState {
+class ClientAuthenticated extends SessionState {
   final User user;
-  //final int user;
 
-  Authenticated({required this.user});
+  ClientAuthenticated({required this.user});
+}
+
+class RiderAuthenticated extends SessionState {
+  //final Rider rider;
+  //Authenticated({required this.rider});
+  RiderAuthenticated();
 }

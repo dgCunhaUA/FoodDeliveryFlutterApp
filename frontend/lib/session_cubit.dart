@@ -12,12 +12,12 @@ class SessionCubit extends Cubit<SessionState> {
     attemptAutoLogin();
   }
 
-  User get currentUser => (state as Authenticated).user;
+  User get currentUser => (state as ClientAuthenticated).user;
 
   void attemptAutoLogin() async {
     try {
       User? user = await userRepo.getUser();
-      emit(Authenticated(user: user!));
+      emit(ClientAuthenticated(user: user!));
     } on Exception {
       emit(Unauthenticated());
     }
@@ -26,7 +26,7 @@ class SessionCubit extends Cubit<SessionState> {
   void showAuth() => emit(Unauthenticated());
   void showSession(AuthCredentials credentials) async {
     User? user = await userRepo.getUser();
-    emit(Authenticated(user: user!));
+    emit(ClientAuthenticated(user: user!));
   }
 
   void signOut() {
