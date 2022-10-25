@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/client/profile/client_profile_screen.dart';
 import 'package:flutter_project/screens/home_page.dart';
-import 'package:flutter_project/screens/search.dart';
 import 'package:flutter_project/screens/orders.dart';
 import 'package:flutter_project/screens/wallet.dart';
 import 'package:flutter_project/screens/shopping_cart.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_project/session_cubit.dart';
 import 'package:flutter_project/session_state.dart';
 
 import '../rider/profile/rider_profile_screen.dart';
-import '../utils/mode.dart';
 
 class TabBarMenu extends StatefulWidget {
   const TabBarMenu({super.key});
@@ -64,7 +62,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
         if (state is ClientAuthenticated) {
           widgetOptions = <Widget>[
             const HomePage(),
-            const Search(),
+            //const Search(),
             const ShoppingCart(),
             const ClientProfileScreen()
           ];

@@ -17,7 +17,15 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FoodDelivery',
-      theme: ThemeData(useMaterial3: true, primarySwatch: Colors.green),
+      theme: ThemeData(
+          useMaterial3: true,
+          primarySwatch: Colors.green,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                foregroundColor:
+                    MaterialStateProperty.all<Color>(Colors.white)),
+          )),
       home: const LoginScreen(),
     );
   }
