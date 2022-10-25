@@ -1,4 +1,5 @@
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_project/screens/loading.dart';
 import 'package:flutter_project/utils/api.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -112,7 +113,7 @@ class _OrderMapState extends State<OrderMap> {
     return Scaffold(
       appBar: AppBar(title: const Text("Mapa")),
       body: _currentPosition == null
-          ? const Center(child: Text("Loading"))
+          ? const LoadingScreen()
           : GoogleMap(
               myLocationButtonEnabled: true,
               zoomControlsEnabled: true,
