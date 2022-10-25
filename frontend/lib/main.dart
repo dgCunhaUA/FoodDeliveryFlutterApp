@@ -1,6 +1,7 @@
 // Created by: Simão Bentes, 97761
 
 import 'package:flutter/material.dart';
+import 'package:flutter_project/screens/login.dart';
 import 'package:flutter_project/widgets/tabbar_menu.dart';
 
 void main() {
@@ -23,7 +24,7 @@ class App extends StatelessWidget {
                 foregroundColor:
                     MaterialStateProperty.all<Color>(Colors.white)),
           )),
-      home: const TabBarMenu(),
+      home: const LoginScreen(),
     );
   }
 }

@@ -21,3 +21,30 @@ var restaurants = [
     'stars': 4.6
   },
 ];
+
+var food_menu = [
+  {
+    'name': 'Big King Texas',
+    'desc': 'Lorem ipsum dolor sit amet.',
+    'price': 8,
+    'img': 'item1.webp',
+  },
+  {
+    'name': 'CBO',
+    'desc': 'Lorem ipsum dolor sit amet.',
+    'price': 9,
+    'img': 'item2.webp',
+  },
+  {
+    'name': 'BigMac Double',
+    'desc': 'Lorem ipsum dolor sit amet.',
+    'price': 8,
+    'img': 'item3.webp',
+  },
+  {
+    'name': 'McChicken',
+    'desc': 'Lorem ipsum dolor sit amet.',
+    'price': 8,
+    'img': 'item4.webp',
+  },
+];
