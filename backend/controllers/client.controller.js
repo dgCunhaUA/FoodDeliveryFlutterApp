@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
 	try {
 		// Get client input
-		const { first_name, last_name, birthdate, address, email, password } =
+		const { name, address, email, password } =
 			req.body;
 
 		// Validate client input
@@ -14,9 +14,7 @@ exports.register = async (req, res) => {
 			!(
 				email &&
 				password &&
-				first_name &&
-				last_name &&
-				birthdate &&
+				name &&
 				address
 			)
 		) {
@@ -35,9 +33,8 @@ exports.register = async (req, res) => {
 
 		// Create user in our database
 		const client = await Client.create({
-			first_name,
-			last_name,
-			birthdate: new Date(Date.UTC(2016, 0, 1)),
+			name,
+			//birthdate: new Date(Date.UTC(2016, 0, 1)),
 			address,
 			email: email.toLowerCase(), // sanitize: convert email to lowercase
 			password: encryptedPassword,
@@ -47,9 +44,6 @@ exports.register = async (req, res) => {
 		const token = jwt.sign(
 			{ user_id: client._id, email },
 			process.env.TOKEN_KEY,
-			{
-				expiresIn: "2h",
-			}
 		);
 		// save client token
 		client.token = token;

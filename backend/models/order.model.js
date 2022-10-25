@@ -11,31 +11,26 @@ const sequelize = new Sequelize(
      }
    );
 
-const client = sequelize.define("client", {
-	name: {
+const order = sequelize.define("order", {
+	restaurant_name: {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
-	address: {
+	restaurant_address: {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
-	email: {
+	client_name: {
 		type: DataTypes.STRING,
 		allowNull: false,
-		unique: true
 	},
-	password: {
+    client_address: {
 		type: DataTypes.STRING,
 		allowNull: false,
-		unique: true
 	},
-	token: {
+	rider: {
 		type: DataTypes.STRING,
 	},
-	photo: {
-        type: DataTypes.BLOB
-    },
 });
 
-module.exports = sequelize.model("client", client)
+module.exports = sequelize.model("order", order)

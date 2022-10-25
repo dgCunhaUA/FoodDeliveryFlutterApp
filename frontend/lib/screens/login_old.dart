@@ -1,31 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/auth/signup/signup_screen.dart';
 
-import '../services/client_api.dart';
 import '../services/storage.dart';
 import '../utils/validator.dart';
 import '../widgets/tabbar_menu.dart';
+import '../services/client_api.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class LoginScreen2 extends StatefulWidget {
+  const LoginScreen2({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen2> createState() => _LoginScreenState2();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _LoginScreenState2 extends State<LoginScreen2> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController birthdateController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
   final ApiClient _apiClient = ApiClient();
   final Storage storage = Storage();
   bool _showPassword = false;
 
-  Future<void> register() async {
-    //TODO:
+  @override
+  initState() {
+    super.initState();
+
+    // ignore: todo
+    // TODO: Check if token is valid
+    /* storage.getToken().then(((token) => {
+          if (token != null)
+            {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const TabBarMenu()))
+            }
+        })); */
+  }
+
+  Future<void> login() async {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Processing Data'),
+        backgroundColor: Colors.green.shade300,
+      ));
+
+      dynamic res = await _apiClient.login(
+        emailController.text,
+        passwordController.text,
+      );
+
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      if (res.statusCode == 200) {
+        // ignore: use_build_context_synchronously
+        /* Navigator.push(context,
+            MaterialPageRoute(builder: (context) => TabBarMenu())); */
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error: $res'),
+          backgroundColor: Colors.red.shade300,
+        ));
+      }
+    }
   }
 
   @override
@@ -58,66 +95,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           // SizedBox(height: size.height * 0.08),
                           const Center(
                             child: Text(
-                              "Registar",
+                              "Login",
                               style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          SizedBox(height: size.height * 0.03),
-                          Row(
-                            children: [
-                              Flexible(
-                                flex: 1,
-                                child: TextFormField(
-                                  controller: firstNameController,
-                                  validator: (value) {
-                                    return Validator.validateName(value ?? "");
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: "First Name",
-                                    isDense: true,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: size.width * 0.06),
-                              Flexible(
-                                flex: 1,
-                                child: TextFormField(
-                                  controller: lastNameController,
-                                  validator: (value) {
-                                    return Validator.validateName(value ?? "");
-                                  },
-                                  decoration: InputDecoration(
-                                    hintText: "Last Name",
-                                    isDense: true,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: size.height * 0.03),
-                          TextFormField(
-                            controller: birthdateController,
-                            /* validator: (value) {
-                              return Validator.val(value ?? "");
-                            }, */
-                            decoration: InputDecoration(
-                              hintText: "Birthdate",
-                              isDense: true,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: size.height * 0.03),
+                          SizedBox(height: size.height * 0.06),
                           TextFormField(
                             controller: emailController,
                             validator: (value) {
@@ -159,26 +144,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           SizedBox(height: size.height * 0.04),
-                          TextFormField(
-                            controller: addressController,
-                            validator: (value) {
-                              return Validator.validateText(value ?? "");
-                            },
-                            decoration: InputDecoration(
-                              hintText: "Address",
-                              isDense: true,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: size.height * 0.03),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: register,
+                                  onPressed: login,
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,
                                       shape: RoundedRectangleBorder(
@@ -187,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 40, vertical: 15)),
                                   child: const Text(
-                                    "Registar",
+                                    "Login",
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
@@ -205,14 +176,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const TabBarMenu()))),
+                                              const SignUpScreen()))),
                                   style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 40, vertical: 15)),
-                                  child: const Text("Login")),
+                                  child: const Text("Registar")),
                             ),
                           )
                         ],

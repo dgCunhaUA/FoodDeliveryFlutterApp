@@ -18,14 +18,13 @@ class Validator {
   }
 
   static String? validatePassword(String value) {
-    /* Pattern pattern = r'^.{6,}$';
+    Pattern pattern = r'^.{3,}$';
     RegExp regex = RegExp(pattern as String);
     if (!regex.hasMatch(value)) {
       return '🚩 Password must be at least 6 characters.';
     } else {
       return null;
-    } */
-    return null;
+    }
   }
 
   static String? validateName(String value) {

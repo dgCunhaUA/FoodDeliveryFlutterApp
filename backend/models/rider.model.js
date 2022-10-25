@@ -1,5 +1,3 @@
-//const sequelize = require('../server.js');
-//const DataTypes = require('sequelize');
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = new Sequelize(
     'proj1',
@@ -11,7 +9,7 @@ const sequelize = new Sequelize(
      }
    );
 
-const client = sequelize.define("client", {
+const rider = sequelize.define("rider", {
 	name: {
 		type: DataTypes.STRING,
 		allowNull: false,
@@ -28,14 +26,17 @@ const client = sequelize.define("client", {
 	password: {
 		type: DataTypes.STRING,
 		allowNull: false,
-		unique: true
 	},
+    vehicle: {
+        type: DataTypes.STRING,
+		allowNull: false,
+    },
 	token: {
 		type: DataTypes.STRING,
 	},
-	photo: {
+    photo: {
         type: DataTypes.BLOB
     },
 });
 
-module.exports = sequelize.model("client", client)
+module.exports = sequelize.model("rider", rider)
