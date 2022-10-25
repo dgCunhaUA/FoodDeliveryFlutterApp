@@ -9,6 +9,7 @@ exports.register = async (req, res) => {
 		const { name, address, email, password, vehicle } =
 			req.body;
 
+		console.log(req.body)
 		// Validate rider input
 		if (
 			!(
@@ -26,7 +27,7 @@ exports.register = async (req, res) => {
 		// Validate if rider exist in our database
 		const oldClient = await Rider.findOne({ where: { email: email } });
 		if (oldClient) {
-			return res.status(409).send("User Already Exist. Please Login");
+			return res.status(409).send("Rider Already Exist.");
 		}
 
 		//Encrypt user password
@@ -39,15 +40,13 @@ exports.register = async (req, res) => {
 			address,
 			email: email.toLowerCase(), // sanitize: convert email to lowercase
 			password: encryptedPassword,
+			vehicle: vehicle
 		});
 
 		// Create token
 		const token = jwt.sign(
 			{ user_id: rider._id, email },
 			process.env.TOKEN_KEY,
-			{
-				expiresIn: "2h",
-			}
 		);
 		// save rider token
 		rider.token = token;

@@ -32,4 +32,10 @@ class SignUpVehicleChanged extends SignUpEvent {
   SignUpVehicleChanged({required this.vehicle});
 }
 
+class SignUpModeChanged extends SignUpEvent {
+  final bool rider;
+
+  SignUpModeChanged({required this.rider});
+}
+
 class SignUpSubmitted extends SignUpEvent {}

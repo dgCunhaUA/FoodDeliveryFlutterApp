@@ -5,6 +5,7 @@ import 'package:flutter_project/screens/loading.dart';
 import 'package:flutter_project/session_cubit.dart';
 import 'package:flutter_project/session_state.dart';
 import 'package:flutter_project/session_view.dart';
+import 'package:flutter_project/utils/mode.dart';
 import 'package:flutter_project/widgets/tabbar_menu.dart';
 
 import 'auth/auth_navigator.dart';
@@ -33,8 +34,8 @@ class AppNavigator extends StatelessWidget {
             ),
 
           // Show session flow
-          if (state is ClientAuthenticated)
-            const MaterialPage(child: TabBarMenu())
+          if (state is ClientAuthenticated || state is RiderAuthenticated)
+            const MaterialPage(child: TabBarMenu()),
         ],
         onPopPage: (route, result) => route.didPop(result),
       );

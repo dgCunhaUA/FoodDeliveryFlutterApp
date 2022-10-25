@@ -30,7 +30,12 @@ class _SignUpScreenScreenState extends State<SignUpScreen> {
   bool _showPassword = false;
 
   bool rider = false;
-  static const List<String> vehicles = <String>['Carro', 'Mota', 'Bicicleta'];
+  static const List<String> vehicles = <String>[
+    'Veiculo',
+    'Carro',
+    'Mota',
+    'Bicicleta'
+  ];
   String vehicleSelected = vehicles.first;
 
   @override
@@ -88,20 +93,7 @@ class _SignUpScreenScreenState extends State<SignUpScreen> {
                             ),
                           ),
                         ),
-                        Center(
-                          child: Switch(
-                            // This bool value toggles the switch.
-                            value: rider,
-                            activeColor: Colors.orange,
-                            onChanged: (bool value) {
-                              // This is called when the user toggles the switch.
-                              setState(() {
-                                rider = value;
-                              });
-                            },
-                          ),
-                        ),
-                        SizedBox(height: size.height * 0.03),
+
                         _signUpInputs(size),
                         Center(
                           child: Padding(
@@ -134,6 +126,23 @@ class _SignUpScreenScreenState extends State<SignUpScreen> {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return Column(children: [
+          Center(
+            child: Switch(
+              // This bool value toggles the switch.
+              value: rider,
+              activeColor: Colors.orange,
+              onChanged: (bool value) {
+                // This is called when the user toggles the switch.
+                setState(() {
+                  rider = value;
+                });
+                context.read<SignUpBloc>().add(
+                      SignUpModeChanged(rider: value),
+                    );
+              },
+            ),
+          ),
+          SizedBox(height: size.height * 0.03),
           TextFormField(
             controller: firstNameController,
             validator: (value) {

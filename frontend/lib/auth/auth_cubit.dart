@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_project/utils/mode.dart';
 
 import '../session_cubit.dart';
 import 'auth_credentials.dart';
@@ -15,6 +16,10 @@ class AuthCubit extends Cubit<AuthState> {
   void showLogin() => emit(AuthState.login);
   void showSignUp() => emit(AuthState.signUp);
 
-  void launchSession(AuthCredentials credentials) =>
-      sessionCubit.showSession(credentials);
+  void launchSession(AuthCredentials credentials) => {
+        if (credentials.riderId != null)
+          sessionCubit.showRiderSession(credentials)
+        else
+          sessionCubit.showClientSession(credentials)
+      };
 }

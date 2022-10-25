@@ -1,7 +1,8 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../models/User.dart';
+import '../../models/Client.dart';
+import '../../models/Rider.dart';
 import '../../repositories/user_repository.dart';
 import '../auth_credentials.dart';
 import '../auth_cubit.dart';
@@ -28,6 +29,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           _handleSignUpAddressChanged(event, emit);
         } else if (event is SignUpVehicleChanged) {
           _handleSignUpVehicleChanged(event, emit);
+        } else if (event is SignUpModeChanged) {
+          _handleModeChanged(event, emit);
         } else if (event is SignUpSubmitted) {
           await _handleSignUpSubmitted(event, emit);
         }
@@ -61,25 +64,53 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(state.copyWith(vehicle: event.vehicle));
   }
 
+  void _handleModeChanged(SignUpModeChanged event, Emitter<SignUpState> emit) {
+    emit(state.copyWith(rider: event.rider));
+  }
+
   Future<void> _handleSignUpSubmitted(
       SignUpSubmitted event, Emitter<SignUpState> emit) async {
     emit(state.copyWith(formStatus: FormSubmitting()));
 
     try {
-      User user = await userRepo.signUp(
-        username: state.username,
-        email: state.email,
-        password: state.password,
-        address: state.address,
-      );
+      if (state.rider) {
+        if (state.vehicle == "Veiculo" || state.vehicle == "") {
+          emit(state.copyWith(
+              formStatus: SubmissionFailed(Exception("Selecione um Veiculo"))));
+          return;
+        }
 
-      emit(state.copyWith(formStatus: SubmissionSuccess()));
+        Rider rider = await userRepo.signUpRider(
+          username: state.username,
+          email: state.email,
+          password: state.password,
+          address: state.address,
+          vehicle: state.vehicle,
+        );
 
-      authCubit.launchSession(AuthCredentials(
-        username: state.username,
-        email: state.email,
-        userId: user.id,
-      ));
+        emit(state.copyWith(formStatus: SubmissionSuccess()));
+
+        authCubit.launchSession(AuthCredentials(
+          username: state.username,
+          email: state.email,
+          riderId: rider.id,
+        ));
+      } else {
+        Client user = await userRepo.signUp(
+          username: state.username,
+          email: state.email,
+          password: state.password,
+          address: state.address,
+        );
+
+        emit(state.copyWith(formStatus: SubmissionSuccess()));
+
+        authCubit.launchSession(AuthCredentials(
+          username: state.username,
+          email: state.email,
+          userId: user.id,
+        ));
+      }
     } on Exception catch (e) {
       emit(state.copyWith(formStatus: SubmissionFailed(e)));
     }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_project/profile/profile_bloc.dart';
-import 'package:flutter_project/profile/profile_state.dart';
+import 'package:flutter_project/client/profile/client_profile_bloc.dart';
+import 'package:flutter_project/client/profile/client_profile_state.dart';
 import 'package:flutter_project/session_state.dart';
 
-import '../session_cubit.dart';
+import '../../session_cubit.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ClientProfileScreen extends StatelessWidget {
+  const ClientProfileScreen({super.key});
 
   void _editProfile() {}
 
@@ -18,8 +18,9 @@ class ProfileScreen extends StatelessWidget {
     final sessionCubit = context.read<SessionCubit>();
 
     return BlocProvider(
-      create: (context) => ProfileBloc(user: sessionCubit.currentUser),
-      child: BlocBuilder<ProfileBloc, ProfileState>(
+      create: (context) =>
+          ClientProfileBloc(client: sessionCubit.currentClient),
+      child: BlocBuilder<ClientProfileBloc, ClientProfileState>(
         builder: (context, state) {
           return Column(
             children: [
@@ -44,7 +45,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        state.user.name,
+                        state.client.name,
                         style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
@@ -67,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                       child: Text(
-                        state.user.address,
+                        state.client.address,
                         style: const TextStyle(fontSize: 15),
                       ),
                     ),

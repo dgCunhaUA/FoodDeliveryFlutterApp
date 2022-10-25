@@ -17,10 +17,8 @@ class AuthNavigator extends StatelessWidget {
           if (state == AuthState.login) MaterialPage(child: LoginScreen()),
 
           // Allow push animation
-          if (state == AuthState.signUp) ...[
-            // Show Sign up
+          if (state == AuthState.signUp)
             const MaterialPage(child: SignUpScreen()),
-          ]
         ],
         onPopPage: (route, result) => route.didPop(result),
       );

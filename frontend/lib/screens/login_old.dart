@@ -53,8 +53,8 @@ class _LoginScreenState2 extends State<LoginScreen2> {
 
       if (res.statusCode == 200) {
         // ignore: use_build_context_synchronously
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const TabBarMenu()));
+        /* Navigator.push(context,
+            MaterialPageRoute(builder: (context) => TabBarMenu())); */
       } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

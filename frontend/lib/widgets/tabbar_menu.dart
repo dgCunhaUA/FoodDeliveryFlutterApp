@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/profile/profile_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_project/client/profile/client_profile_screen.dart';
 import 'package:flutter_project/screens/home_page.dart';
 import 'package:flutter_project/screens/search.dart';
 import 'package:flutter_project/screens/orders.dart';
 import 'package:flutter_project/screens/wallet.dart';
 import 'package:flutter_project/screens/shopping_cart.dart';
-import 'package:flutter_project/utils/mode.dart';
+import 'package:flutter_project/session_cubit.dart';
+import 'package:flutter_project/session_state.dart';
+
+import '../rider/profile/rider_profile_screen.dart';
+import '../utils/mode.dart';
 
 class TabBarMenu extends StatefulWidget {
   const TabBarMenu({super.key});
@@ -15,12 +20,10 @@ class TabBarMenu extends StatefulWidget {
 }
 
 class _TabBarMenuState extends State<TabBarMenu> {
+  //final bool driver_mode;
   int _selectedIndex = 0;
 
-  //divisão em três páginas, através de uma bottomNavigationBar
-  static const List<Widget> _widgetOptions = driver_mode
-      ? <Widget>[Orders(), Wallet()]
-      : <Widget>[HomePage(), Search(), ShoppingCart(), ProfileScreen()];
+//divisão em três páginas, através de uma bottomNavigationBar
 
   void _onItemTapped(int index) {
     setState(() {
@@ -28,51 +31,79 @@ class _TabBarMenuState extends State<TabBarMenu> {
     });
   }
 
-  var tabbar_item = driver_mode
-      ? const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.delivery_dining),
-            label: 'Encomendas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.wallet),
-            label: 'Carteira',
-          ),
-        ]
-      : const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Página Inicial',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.manage_search),
-            label: 'Procurar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Carrinhos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Conta',
-          ),
-        ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _widgetOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: true,
-        unselectedFontSize: 11.0,
-        selectedFontSize: 11.0,
-        type: BottomNavigationBarType.fixed,
-        items: tabbar_item,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Color.fromARGB(255, 100, 100, 100),
-        onTap: _onItemTapped,
-      ),
+    return BlocBuilder<SessionCubit, SessionState>(
+      builder: (context, state) {
+        List<Widget> widgetOptions = <Widget>[];
+        var tabbarItem = <BottomNavigationBarItem>[];
+
+        if (state is RiderAuthenticated) {
+          widgetOptions = <Widget>[
+            const Orders(),
+            const Wallet(),
+            const RiderProfileScreen()
+          ];
+
+          tabbarItem = <BottomNavigationBarItem>[
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.delivery_dining),
+              label: 'Encomendas',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.wallet),
+              label: 'Carteira',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Conta',
+            ),
+          ];
+        }
+
+        if (state is ClientAuthenticated) {
+          widgetOptions = <Widget>[
+            const HomePage(),
+            const Search(),
+            const ShoppingCart(),
+            const ClientProfileScreen()
+          ];
+
+          tabbarItem = <BottomNavigationBarItem>[
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Página Inicial',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.manage_search),
+              label: 'Procurar',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              label: 'Carrinhos',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Conta',
+            ),
+          ];
+        }
+
+        return Scaffold(
+          body: widgetOptions.elementAt(_selectedIndex),
+          bottomNavigationBar: BottomNavigationBar(
+            showUnselectedLabels: true,
+            unselectedFontSize: 11.0,
+            selectedFontSize: 11.0,
+            type: BottomNavigationBarType.fixed,
+            items: tabbarItem,
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.black,
+            unselectedItemColor: const Color.fromARGB(255, 100, 100, 100),
+            onTap: _onItemTapped,
+          ),
+        );
+      },
     );
   }
 }

@@ -5,6 +5,8 @@ import 'package:flutter_project/auth/login/login_state.dart';
 import 'package:flutter_project/repositories/user_repository.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
+import '../../models/Rider.dart';
+import '../../models/Client.dart';
 import '../../models/User.dart';
 import '../auth_credentials.dart';
 import '../auth_cubit.dart';
@@ -44,7 +46,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(formStatus: FormSubmitting()));
 
     try {
-      User user = await userRepo.login(
+      Client client = await userRepo.login(
         email: state.email,
         password: state.password,
       );
@@ -52,7 +54,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       authCubit.launchSession(AuthCredentials(
         email: state.email,
-        userId: user.id,
+        userId: client.id,
+      ));
+    } on Exception catch (e) {
+      print(e);
+      //emit(state.copyWith(formStatus: SubmissionFailed(e)));
+    }
+
+    try {
+      Rider rider = await userRepo.loginRider(
+        email: state.email,
+        password: state.password,
+      );
+      emit(state.copyWith(formStatus: SubmissionSuccess()));
+
+      authCubit.launchSession(AuthCredentials(
+        email: state.email,
+        riderId: rider.id,
       ));
     } on Exception catch (e) {
       emit(state.copyWith(formStatus: SubmissionFailed(e)));

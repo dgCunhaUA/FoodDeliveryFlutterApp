@@ -3,12 +3,14 @@ class AuthCredentials {
   final String email;
   final String? password;
   int? userId;
+  int? riderId;
 
   AuthCredentials({
     this.username,
     required this.email,
     this.password,
     this.userId,
+    this.riderId,
   });
 }
 

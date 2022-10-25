@@ -11,6 +11,7 @@ const upload = multer();
 app.use(express.json());
 
 app.use("/api/client", require("./routes/client.routes"));
+app.use("/api/rider", require("./routes/rider.routes"));
 app.use("/api/restaurant", require("./routes/restaurant.routes"));
 
 app.listen(port, () => {

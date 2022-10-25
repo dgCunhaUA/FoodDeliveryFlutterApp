@@ -6,6 +6,7 @@ class SignUpState {
   final String password;
   final String address;
   final String vehicle;
+  final bool rider;
 
   final FormSubmissionStatus formStatus;
 
@@ -15,6 +16,7 @@ class SignUpState {
     this.password = '',
     this.address = '',
     this.vehicle = '',
+    this.rider = false,
     this.formStatus = const InitialFormStatus(),
   });
 
@@ -24,6 +26,7 @@ class SignUpState {
     String? password,
     String? address,
     String? vehicle,
+    bool? rider,
     FormSubmissionStatus? formStatus,
   }) {
     return SignUpState(
@@ -32,6 +35,7 @@ class SignUpState {
       password: password ?? this.password,
       address: address ?? this.address,
       vehicle: vehicle ?? this.vehicle,
+      rider: rider ?? this.rider,
       formStatus: formStatus ?? this.formStatus,
     );
   }

@@ -1,4 +1,4 @@
-abstract class ProfileEvent {}
+abstract class ClientProfileEvent {}
 
 /* class LoginEmailChanged extends LoginEvent {
   final String email;
