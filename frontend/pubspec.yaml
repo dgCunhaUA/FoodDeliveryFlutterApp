@@ -44,6 +44,7 @@ dependencies:
   geolocator: ^9.0.2
   open_route_service: ^1.2.2
   geocoding: ^2.0.5
+  modal_bottom_sheet: ^2.1.2
 
 dev_dependencies:
   flutter_test:
