@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/client/profile/client_profile_bloc.dart';
+import 'package:flutter_project/client/profile/client_profile_event.dart';
 import 'package:flutter_project/client/profile/client_profile_state.dart';
-import 'package:flutter_project/session_state.dart';
+import 'package:flutter_project/utils/api.dart';
 
 import '../../session_cubit.dart';
 
@@ -22,6 +27,10 @@ class ClientProfileScreen extends StatelessWidget {
           ClientProfileBloc(client: sessionCubit.currentClient),
       child: BlocBuilder<ClientProfileBloc, ClientProfileState>(
         builder: (context, state) {
+          //var image = _getImg();
+
+          print(state.client!.photo);
+
           return Column(
             children: [
               Container(
@@ -33,25 +42,39 @@ class ClientProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 15.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: const Image(
-                            image: AssetImage("images/me.jpeg"),
-                            fit: BoxFit.contain,
-                            width: 130,
-                            height: 130,
-                          ),
-                        ),
-                      ),
+                          padding: const EdgeInsets.only(bottom: 15.0),
+                          child: state.isEditing
+                              ? const Text("Editing")
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: state.client!.photo != null
+                                      ? Image.network(
+                                          "$urlAPI/client/photos/${state.client!.photo!}")
+                                      : const Image(
+                                          image: AssetImage("images/me.jpeg"),
+                                          fit: BoxFit.contain,
+                                          width: 130,
+                                          height: 130,
+                                        ),
+                                )),
                       Text(
-                        state.client.name,
+                        state.client!.name,
                         style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
-                      TextButton(
-                          onPressed: _editProfile,
-                          child: const Text("Editar Perfil"))
+                      state.isEditing
+                          ? TextButton(
+                              onPressed: () => context
+                                  .read<ClientProfileBloc>()
+                                  .add(SaveProfileRequest()),
+                              child: const Text("Guardar Alterações"),
+                            )
+                          : TextButton(
+                              onPressed: () => context
+                                  .read<ClientProfileBloc>()
+                                  .add(EditProfileRequest()),
+                              child: const Text("Editar Perfil"),
+                            )
                     ]),
               ),
               Padding(
@@ -68,7 +91,7 @@ class ClientProfileScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                       child: Text(
-                        state.client.address,
+                        state.client!.address,
                         style: const TextStyle(fontSize: 15),
                       ),
                     ),

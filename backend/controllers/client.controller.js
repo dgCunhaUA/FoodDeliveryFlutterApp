@@ -1,23 +1,19 @@
+
 const Client = require("../models/client.model");
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const fs = require('fs')
 
 exports.register = async (req, res) => {
 	try {
 		// Get client input
-		const { name, address, email, password } =
-			req.body;
+		const { name, address, email, password } = req.body;
+
+		const photo = req.file;
 
 		// Validate client input
-		if (
-			!(
-				email &&
-				password &&
-				name &&
-				address
-			)
-		) {
+		if (!(email && password && name && address)) {
 			res.status(400).send("All input is required");
 		}
 
@@ -38,12 +34,13 @@ exports.register = async (req, res) => {
 			address,
 			email: email.toLowerCase(), // sanitize: convert email to lowercase
 			password: encryptedPassword,
+			photo: photo ?? null,
 		});
 
 		// Create token
 		const token = jwt.sign(
 			{ user_id: client._id, email },
-			process.env.TOKEN_KEY,
+			process.env.TOKEN_KEY
 		);
 		// save client token
 		client.token = token;
@@ -96,6 +93,70 @@ exports.login = async (req, res) => {
 	}
 	// Our register logic ends here
 };
+
+
+exports.upload = async (req, res) => {
+	try {
+		console.log(req.file);
+		const id = req.body["id"];
+
+		const client = await Client.findOne({
+			where: {
+				id: id,
+			},
+		});
+
+		console.log(req.file)
+		//fs.writeFileSync(req.file);
+
+		console.log("....");
+
+		console.log(req.file.filename)
+
+		client.photo = req.file.filename;
+		client.save();
+
+		console.log(client)
+
+		res.send("file uploaded successfully.");
+	} catch (error) {
+		console.log(error)
+		res.status(400).send("Error while uploading file. Try again later.");
+	}
+};
+
+exports.download = async (req, res) => {
+	console.log(req.params)
+	try {
+		console.log(req.body)
+		console.log(req.params)
+		const id = req.params.id;
+		const client = await Client.findOne({
+			where: {
+				id: id,
+			},
+		});
+
+		console.log(client.photo)
+
+		//const file = await File.findById(req.params.id);
+		res.set({
+			"Content-Type": client.photo,
+		});
+		//res.sendFile(path.join(__dirname, "..", file.file_path));
+		//res.sendFile(client.photo)
+		res.send(client.photo)
+	} catch (error) {
+		console.log(error)
+		res.status(400).send("Error while downloading file. Try again later.");
+	}
+};
+
+
+exports.getImg = async (req, res) => {
+	const filename = req.params["filename"]
+	res.sendFile("/Users/cunha/Desktop/CM/flutter_project/backend/uploads/"+filename)
+}
 
 /* sequelize
 	.authenticate()

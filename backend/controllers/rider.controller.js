@@ -8,8 +8,9 @@ exports.register = async (req, res) => {
 		// Get rider input
 		const { name, address, email, password, vehicle } =
 			req.body;
+			
+		const photo = req.file;
 
-		console.log(req.body)
 		// Validate rider input
 		if (
 			!(
@@ -40,7 +41,8 @@ exports.register = async (req, res) => {
 			address,
 			email: email.toLowerCase(), // sanitize: convert email to lowercase
 			password: encryptedPassword,
-			vehicle: vehicle
+			vehicle: vehicle,
+			photo: photo ?? null,
 		});
 
 		// Create token
