@@ -1,17 +1,21 @@
-abstract class ProfileSubmissionStatus {
-  const ProfileSubmissionStatus();
+abstract class ProfileEditSubmissionStatus {
+  const ProfileEditSubmissionStatus();
 }
 
-class InitialProfileSubmissionStatus extends ProfileSubmissionStatus {
-  const InitialProfileSubmissionStatus();
+class ProfileInitialStatus extends ProfileEditSubmissionStatus {
+  const ProfileInitialStatus();
 }
 
-class ProfileUpdateSubmitting extends ProfileSubmissionStatus {}
+class ProfileInitialEditingStatus extends ProfileEditSubmissionStatus {}
 
-class ProfileUpdateSubmissionSuccess extends ProfileSubmissionStatus {}
+class ProfileEditingImageTaken extends ProfileEditSubmissionStatus {}
 
-class ProfileUpdateSubmissionFailed extends ProfileSubmissionStatus {
+class ProfileEditingSubmitting extends ProfileEditSubmissionStatus {}
+
+class ProfileEditingSubmissionSuccess extends ProfileEditSubmissionStatus {}
+
+class SubmissionFailed extends ProfileEditSubmissionStatus {
   final Exception exception;
 
-  ProfileUpdateSubmissionFailed(this.exception);
+  SubmissionFailed(this.exception);
 }

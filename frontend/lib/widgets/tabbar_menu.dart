@@ -65,7 +65,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
             const HomePage(),
             SearchScreen(),
             const ShoppingCart(),
-            const ClientProfileScreen()
+            ClientProfileScreen()
           ];
 
           tabbarItem = <BottomNavigationBarItem>[

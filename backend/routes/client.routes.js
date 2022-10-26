@@ -13,7 +13,7 @@ var storage = multer.diskStorage({
 	  cb(null, 'uploads/')
 	},                    
 	filename: function (req, file, cb) {
-	  cb(null, Date.now() + path.extname(file.originalname))
+	  cb(null, req.body["filename"])
 	}                     
   }); 
 const upload = multer({storage: storage})
@@ -30,8 +30,8 @@ router.post("/login", clientController.login);
 
 router.post("/upload", upload.single("photo"), clientController.upload);
 
-router.get("/download/:id", clientController.download);
+//router.get("/photo/:filename", clientController.getImg);
 
-router.get("/photos/:filename", clientController.getImg);
+router.get("/photo/:id", clientController.download);
 
 module.exports = router;

@@ -3,7 +3,8 @@ const Client = require("../models/client.model");
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const fs = require('fs')
+const fs = require('fs');
+const { param } = require("../routes/client.routes");
 
 exports.register = async (req, res) => {
 	try {
@@ -96,8 +97,8 @@ exports.login = async (req, res) => {
 
 
 exports.upload = async (req, res) => {
+
 	try {
-		console.log(req.file);
 		const id = req.body["id"];
 
 		const client = await Client.findOne({
@@ -106,56 +107,37 @@ exports.upload = async (req, res) => {
 			},
 		});
 
-		console.log(req.file)
-		//fs.writeFileSync(req.file);
+		client.photo = req.body["filename"];
+		await client.save();
 
-		console.log("....");
-
-		console.log(req.file.filename)
-
-		client.photo = req.file.filename;
-		client.save();
-
-		console.log(client)
-
-		res.send("file uploaded successfully.");
+		res.status(200).send(client);
 	} catch (error) {
 		console.log(error)
 		res.status(400).send("Error while uploading file. Try again later.");
 	}
 };
 
-exports.download = async (req, res) => {
-	console.log(req.params)
-	try {
-		console.log(req.body)
-		console.log(req.params)
-		const id = req.params.id;
-		const client = await Client.findOne({
-			where: {
-				id: id,
-			},
-		});
-
-		console.log(client.photo)
-
-		//const file = await File.findById(req.params.id);
-		res.set({
-			"Content-Type": client.photo,
-		});
-		//res.sendFile(path.join(__dirname, "..", file.file_path));
-		//res.sendFile(client.photo)
-		res.send(client.photo)
-	} catch (error) {
-		console.log(error)
-		res.status(400).send("Error while downloading file. Try again later.");
-	}
-};
-
-
 exports.getImg = async (req, res) => {
+
+	console.log(req)
 	const filename = req.params["filename"]
 	res.sendFile("/Users/cunha/Desktop/CM/flutter_project/backend/uploads/"+filename)
+}
+
+exports.download = async (req, res) => {
+
+	console.log(req.params)
+
+	const client = await Client.findOne({
+		where: {
+			id: req.params.id,
+		},
+	});
+
+	if( client.photo != null)
+		res.status(200).sendFile("/Users/cunha/Desktop/CM/flutter_project/backend/uploads/"+client.photo)
+	else
+		res.status(404).send("Foto não encontrada")
 }
 
 /* sequelize

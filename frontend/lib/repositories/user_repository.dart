@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_project/utils/api.dart';
@@ -169,5 +170,36 @@ class UserRepository {
 
   Future<void> signOut() async {
     await _deleteStorage();
+  }
+
+  Future<File> uploadClientPhoto(File photo) async {
+    try {
+      Client? client = await getClient();
+
+      String fileName = photo.path.split('/').last;
+
+      FormData formData = FormData.fromMap({
+        "id": client!.id,
+        "photo": await MultipartFile.fromFile(photo.path, filename: fileName),
+        "filename": fileName
+      });
+
+      Response response =
+          await _dio.post('$urlAPI/client/upload', data: formData);
+
+      if (response.statusCode == 200) {
+        Client updatedClient = Client.fromJson(response.data);
+        await _persistClient(updatedClient);
+
+        return photo;
+      } else {
+        throw Exception(response.statusMessage);
+      }
+
+      //return response.data['id'];
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Erro ao fazer upload");
+    }
   }
 }

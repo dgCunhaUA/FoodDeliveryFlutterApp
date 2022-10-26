@@ -8,7 +8,7 @@ class Client {
   late final String password;
   late final String updatedAt;
   late final String createdAt;
-  late final String token;
+  late final String? token;
   late final String? photo;
 
   Client(
@@ -23,8 +23,6 @@ class Client {
       this.photo});
 
   Client.fromJson(Map<String, dynamic> json) {
-    print(json);
-    print(json['photo']);
     id = json['id'];
     name = json['name'];
     address = json['address'];
@@ -34,7 +32,6 @@ class Client {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     //photo = json['photo'] != null ? Photo.fromJson(json['photo']) : null;
-    print(json["photo"]);
     photo = json['photo'];
   }
 
