@@ -121,6 +121,8 @@ class RiderProfileScreen extends StatelessWidget {
     return BlocBuilder<RiderProfileBloc, RiderProfileState>(
       builder: (context, state) {
         print(state.profileEditingStatus);
+        print(state.image);
+
         if (state.profileEditingStatus is ProfileInitialEditingStatus) {
           return InkWell(
             onTap: (() => context
@@ -131,12 +133,23 @@ class RiderProfileScreen extends StatelessWidget {
               child: Image.network(
                 "$urlAPI/rider/photo/${state.rider.id}",
                 errorBuilder: (context, error, stackTrace) {
-                  return const Image(
-                    image: AssetImage("images/me.jpeg"),
-                    fit: BoxFit.contain,
-                    width: 150,
-                    height: 130,
-                  );
+                  if (state.image != null) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.file(
+                        state.image!,
+                        width: 150,
+                        height: 130,
+                      ),
+                    );
+                  } else {
+                    return const Image(
+                      image: AssetImage("images/me.jpeg"),
+                      fit: BoxFit.contain,
+                      width: 150,
+                      height: 130,
+                    );
+                  }
                 },
                 width: 150,
                 height: 130,
@@ -167,12 +180,23 @@ class RiderProfileScreen extends StatelessWidget {
             child: Image.network(
               "$urlAPI/rider/photo/${state.rider.id}",
               errorBuilder: (context, error, stackTrace) {
-                return const Image(
-                  image: AssetImage("images/me.jpeg"),
-                  fit: BoxFit.contain,
-                  width: 150,
-                  height: 130,
-                );
+                if (state.image != null) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Image.file(
+                      state.image!,
+                      width: 150,
+                      height: 130,
+                    ),
+                  );
+                } else {
+                  return const Image(
+                    image: AssetImage("images/me.jpeg"),
+                    fit: BoxFit.contain,
+                    width: 150,
+                    height: 130,
+                  );
+                }
               },
               width: 150,
               height: 130,
