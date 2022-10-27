@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_project/utils/mode.dart';
 
 import '../session_cubit.dart';
 import 'auth_credentials.dart';

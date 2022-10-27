@@ -1,26 +1,30 @@
+import 'package:flutter_project/client/profile/profile_submission_status.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_project/client/profile/client_profile_bloc.dart';
-import 'package:flutter_project/client/profile/client_profile_state.dart';
-import 'package:flutter_project/repositories/user_repository.dart';
 import 'package:flutter_project/rider/profile/rider_profile_bloc.dart';
+import 'package:flutter_project/rider/profile/rider_profile_event.dart';
 import 'package:flutter_project/rider/profile/rider_profile_state.dart';
+import 'package:flutter_project/utils/api.dart';
 
+import '../../repositories/user_repository.dart';
 import '../../session_cubit.dart';
 
 class RiderProfileScreen extends StatelessWidget {
   const RiderProfileScreen({super.key});
 
-  void _editProfile() {}
-
-  void _checkDeliveryHistory() {}
+  void _checkOrdersHistory() {}
 
   @override
   Widget build(BuildContext context) {
     final sessionCubit = context.read<SessionCubit>();
+    final userRepo = context.read<UserRepository>();
 
     return BlocProvider(
-      create: (context) => RiderProfileBloc(rider: sessionCubit.currentRider),
+      create: (context) => RiderProfileBloc(
+        rider: sessionCubit.currentRider,
+        userRepo: userRepo,
+      ),
       child: BlocBuilder<RiderProfileBloc, RiderProfileState>(
         builder: (context, state) {
           return Column(
@@ -34,25 +38,29 @@ class RiderProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 15.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: const Image(
-                            image: AssetImage("images/me.jpeg"),
-                            fit: BoxFit.contain,
-                            width: 130,
-                            height: 130,
-                          ),
-                        ),
-                      ),
+                          padding: const EdgeInsets.only(bottom: 15.0),
+                          child: _getProfileImage()),
                       Text(
                         state.rider.name,
                         style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
-                      TextButton(
-                          onPressed: _editProfile,
-                          child: const Text("Editar Perfil"))
+                      state.profileEditingStatus
+                                  is ProfileInitialEditingStatus ||
+                              state.profileEditingStatus
+                                  is ProfileEditingImageTaken
+                          ? TextButton(
+                              onPressed: () => context
+                                  .read<RiderProfileBloc>()
+                                  .add(SaveProfileRequest()),
+                              child: const Text("Guardar Alterações"),
+                            )
+                          : TextButton(
+                              onPressed: () => context
+                                  .read<RiderProfileBloc>()
+                                  .add(EditProfileRequest()),
+                              child: const Text("Editar Perfil"),
+                            ),
                     ]),
               ),
               Padding(
@@ -77,7 +85,7 @@ class RiderProfileScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 15.0),
                       child: ElevatedButton(
-                          onPressed: _checkDeliveryHistory,
+                          onPressed: _checkOrdersHistory,
                           child: const Text("Historico de entregas")),
                     ),
                   ],
@@ -106,6 +114,103 @@ class RiderProfileScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  Widget _getProfileImage() {
+    return BlocBuilder<RiderProfileBloc, RiderProfileState>(
+      builder: (context, state) {
+        print(state.profileEditingStatus);
+        print(state.image);
+
+        if (state.profileEditingStatus is ProfileInitialEditingStatus) {
+          return InkWell(
+            onTap: (() => context
+                .read<RiderProfileBloc>()
+                .add(EditProfilePhotoRequest())),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Image.network(
+                "$urlAPI/rider/photo/${state.rider.id}",
+                errorBuilder: (context, error, stackTrace) {
+                  if (state.image != null) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.file(
+                        state.image!,
+                        width: 150,
+                        height: 130,
+                      ),
+                    );
+                  } else {
+                    return const Image(
+                      image: AssetImage("images/me.jpeg"),
+                      fit: BoxFit.contain,
+                      width: 150,
+                      height: 130,
+                    );
+                  }
+                },
+                width: 150,
+                height: 130,
+              ),
+            ),
+          );
+        } else if (state.profileEditingStatus is ProfileEditingImageTaken) {
+          return InkWell(
+            onTap: (() => context
+                .read<RiderProfileBloc>()
+                .add(EditProfilePhotoRequest())),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Image.file(
+                state.image!,
+                width: 150,
+                height: 130,
+              ),
+            ),
+          );
+        } else if (state.profileEditingStatus is ProfileEditingSubmitting) {
+          return const CircularProgressIndicator();
+        } else if (state.profileEditingStatus
+                is ProfileEditingSubmissionSuccess ||
+            state.profileEditingStatus is ProfileInitialStatus) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Image.network(
+              "$urlAPI/rider/photo/${state.rider.id}",
+              errorBuilder: (context, error, stackTrace) {
+                if (state.image != null) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Image.file(
+                      state.image!,
+                      width: 150,
+                      height: 130,
+                    ),
+                  );
+                } else {
+                  return const Image(
+                    image: AssetImage("images/me.jpeg"),
+                    fit: BoxFit.contain,
+                    width: 150,
+                    height: 130,
+                  );
+                }
+              },
+              width: 150,
+              height: 130,
+            ),
+          );
+        } else {
+          return const Image(
+            image: AssetImage("images/me.jpeg"),
+            fit: BoxFit.contain,
+            width: 150,
+            height: 130,
+          );
+        }
+      },
     );
   }
 }

@@ -1,3 +1,4 @@
+
 const Client = require("../models/client.model");
 
 const bcrypt = require("bcryptjs");
@@ -6,18 +7,12 @@ const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
 	try {
 		// Get client input
-		const { name, address, email, password } =
-			req.body;
+		const { name, address, email, password } = req.body;
+
+		const photo = req.file;
 
 		// Validate client input
-		if (
-			!(
-				email &&
-				password &&
-				name &&
-				address
-			)
-		) {
+		if (!(email && password && name && address)) {
 			res.status(400).send("All input is required");
 		}
 
@@ -38,15 +33,17 @@ exports.register = async (req, res) => {
 			address,
 			email: email.toLowerCase(), // sanitize: convert email to lowercase
 			password: encryptedPassword,
+			photo: photo ?? null,
 		});
 
 		// Create token
 		const token = jwt.sign(
 			{ user_id: client._id, email },
-			process.env.TOKEN_KEY,
+			process.env.TOKEN_KEY
 		);
 		// save client token
 		client.token = token;
+		await client.save()
 
 		// return new client
 		res.status(201).json(client);
@@ -85,6 +82,7 @@ exports.login = async (req, res) => {
 
 			// save user token
 			client.token = token;
+			await client.save();
 
 			// client
 			res.status(200).json(client);
@@ -96,6 +94,55 @@ exports.login = async (req, res) => {
 	}
 	// Our register logic ends here
 };
+
+
+exports.upload = async (req, res) => {
+
+	try {
+		const id = req.body["id"];
+
+		const client = await Client.findOne({
+			where: {
+				id: id,
+			},
+		});
+
+		client.photo = req.body["filename"];
+		await client.save();
+
+
+		console.log(client);
+		console.log(client.token);
+
+		res.status(200).send(client);
+	} catch (error) {
+		console.log(error)
+		res.status(400).send("Error while uploading file. Try again later.");
+	}
+};
+
+exports.getImg = async (req, res) => {
+
+	console.log(req)
+	const filename = req.params["filename"]
+	res.sendFile("/Users/cunha/Desktop/CM/flutter_project/backend/uploads/"+filename)
+}
+
+exports.download = async (req, res) => {
+
+	console.log(req.params)
+
+	const client = await Client.findOne({
+		where: {
+			id: req.params.id,
+		},
+	});
+
+	if( client.photo != null)
+		res.status(200).sendFile("/Users/cunha/Desktop/CM/flutter_project/backend/uploads/"+client.photo)
+	else
+		res.status(404).send("Foto não encontrada")
+}
 
 /* sequelize
 	.authenticate()

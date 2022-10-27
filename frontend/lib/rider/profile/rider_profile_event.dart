@@ -1,16 +1,9 @@
 abstract class RiderProfileEvent {}
 
-/* class LoginEmailChanged extends LoginEvent {
-  final String email;
+class EditProfileRequest extends RiderProfileEvent {}
 
-  LoginEmailChanged({required this.email});
-}
+class EditProfilePhotoRequest extends RiderProfileEvent {}
 
-class LoginPasswordChanged extends LoginEvent {
-  final String password;
+class SaveProfileRequest extends RiderProfileEvent {}
 
-  LoginPasswordChanged({required this.password});
-}
-
-class LoginSubmitted extends LoginEvent {}
- */
+class SaveProfileSubmiting extends RiderProfileEvent {}

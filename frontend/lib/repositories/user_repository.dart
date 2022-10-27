@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_project/utils/api.dart';
@@ -169,5 +170,69 @@ class UserRepository {
 
   Future<void> signOut() async {
     await _deleteStorage();
+  }
+
+  Future<File> uploadClientPhoto(File photo) async {
+    try {
+      Client? client = await getClient();
+
+      String fileName = photo.path.split('/').last;
+
+      FormData formData = FormData.fromMap({
+        "id": client!.id,
+        "photo": await MultipartFile.fromFile(photo.path, filename: fileName),
+        "filename": fileName
+      });
+
+      Response response =
+          await _dio.post('$urlAPI/client/upload', data: formData);
+
+      if (response.statusCode == 200) {
+        Client updatedClient = Client.fromJson(response.data);
+        await _persistClient(updatedClient);
+
+        return photo;
+      } else {
+        throw Exception(response.statusMessage);
+      }
+
+      //return response.data['id'];
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Erro ao fazer upload");
+    }
+  }
+
+  Future<File> uploadRiderPhoto(File photo) async {
+    try {
+      Rider? rider = await getRider();
+
+      String fileName = photo.path.split('/').last;
+
+      FormData formData = FormData.fromMap({
+        "id": rider!.id,
+        "photo": await MultipartFile.fromFile(photo.path, filename: fileName),
+        "filename": fileName
+      });
+
+      Response response =
+          await _dio.post('$urlAPI/rider/upload', data: formData);
+
+      print(response.data);
+
+      if (response.statusCode == 200) {
+        Rider updatedRider = Rider.fromJson(response.data);
+        await _persistRider(updatedRider);
+
+        return photo;
+      } else {
+        throw Exception(response.statusMessage);
+      }
+
+      //return response.data['id'];
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Erro ao fazer upload");
+    }
   }
 }

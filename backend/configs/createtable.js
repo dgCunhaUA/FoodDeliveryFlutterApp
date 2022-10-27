@@ -37,7 +37,7 @@ const client = sequelize.define("client", {
 		type: DataTypes.STRING,
 	},
 	photo: {
-        type: DataTypes.BLOB
+        type: DataTypes.STRING
     },
 });
 
@@ -67,7 +67,7 @@ const rider = sequelize.define("rider", {
 		type: DataTypes.STRING,
 	},
 	photo: {
-        type: DataTypes.BLOB
+        type: DataTypes.STRING
     },
 });
 
@@ -81,7 +81,7 @@ const restaurant = sequelize.define("restaurant", {
 		allowNull: false,
 	},
     photo: {
-        type: DataTypes.BLOB
+        type: DataTypes.STRING
     },
 	description: {
 		type: DataTypes.STRING,

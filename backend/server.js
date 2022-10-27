@@ -1,18 +1,22 @@
 require("dotenv").config();
 require("./configs/database").connect();
-
 const express = require("express");
 const app = express();
 const port = 3000;
 
-const multer = require('multer');
-const upload = multer();
+const bodyParser = require("body-parser");
+const cors = require('cors')
 
-app.use(express.json());
+app.use(cors())
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.use("/api/client", require("./routes/client.routes"));
 app.use("/api/rider", require("./routes/rider.routes"));
 app.use("/api/restaurant", require("./routes/restaurant.routes"));
+
+const rootdir = __dirname;
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
@@ -33,4 +37,4 @@ sequelize
 		console.error("Unable to connect to the database: ", error);
 	});
 
-module.exports = { sequelize, upload };
+module.exports = { sequelize, rootdir };

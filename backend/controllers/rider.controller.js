@@ -8,8 +8,9 @@ exports.register = async (req, res) => {
 		// Get rider input
 		const { name, address, email, password, vehicle } =
 			req.body;
+			
+		const photo = req.file;
 
-		console.log(req.body)
 		// Validate rider input
 		if (
 			!(
@@ -25,8 +26,8 @@ exports.register = async (req, res) => {
 
 		// check if rider already exist
 		// Validate if rider exist in our database
-		const oldClient = await Rider.findOne({ where: { email: email } });
-		if (oldClient) {
+		const oldRider = await Rider.findOne({ where: { email: email } });
+		if (oldRider) {
 			return res.status(409).send("Rider Already Exist.");
 		}
 
@@ -40,7 +41,8 @@ exports.register = async (req, res) => {
 			address,
 			email: email.toLowerCase(), // sanitize: convert email to lowercase
 			password: encryptedPassword,
-			vehicle: vehicle
+			vehicle: vehicle,
+			photo: photo ?? null,
 		});
 
 		// Create token
@@ -50,6 +52,7 @@ exports.register = async (req, res) => {
 		);
 		// save rider token
 		rider.token = token;
+		await rider.save();
 
 		// return new rider
 		res.status(201).json(rider);
@@ -79,12 +82,13 @@ exports.login = async (req, res) => {
 		if (rider && (await bcrypt.compare(password, rider.password))) {
 			// Create token
 			const token = jwt.sign(
-				{ user_id: rider._id, email },
+				{ rider_id: rider._id, email },
 				process.env.TOKEN_KEY,
 			);
 
 			// save user token
 			rider.token = token;
+			await rider.save();
 
 			// rider
 			res.status(200).json(rider);
@@ -96,3 +100,47 @@ exports.login = async (req, res) => {
 	}
 	// Our register logic ends here
 };
+
+
+
+exports.upload = async (req, res) => {
+
+	try {
+		const id = req.body["id"];
+
+		const rider = await Rider.findOne({
+			where: {
+				id: id,
+			},
+		});
+
+		rider.photo = req.body["filename"];
+		await rider.save();
+
+		console.log(rider);
+
+		res.status(200).send(rider);
+	} catch (error) {
+		console.log(error)
+		res.status(400).send("Error while uploading file. Try again later.");
+	}
+};
+
+exports.getImg = async (req, res) => {
+	const filename = req.params["filename"]
+	res.sendFile("/Users/cunha/Desktop/CM/flutter_project/backend/uploads/"+filename)
+}
+
+exports.download = async (req, res) => {
+
+	const rider = await Rider.findOne({
+		where: {
+			id: req.params.id,
+		},
+	});
+
+	if( rider.photo != null)
+		res.status(200).sendFile("/Users/cunha/Desktop/CM/flutter_project/backend/uploads/"+rider.photo)
+	else
+		res.status(404).send("Foto não encontrada")
+}

@@ -1,16 +1,9 @@
 abstract class ClientProfileEvent {}
 
-/* class LoginEmailChanged extends LoginEvent {
-  final String email;
+class EditProfileRequest extends ClientProfileEvent {}
 
-  LoginEmailChanged({required this.email});
-}
+class EditProfilePhotoRequest extends ClientProfileEvent {}
 
-class LoginPasswordChanged extends LoginEvent {
-  final String password;
+class SaveProfileRequest extends ClientProfileEvent {}
 
-  LoginPasswordChanged({required this.password});
-}
-
-class LoginSubmitted extends LoginEvent {}
- */
+class SaveProfileSubmiting extends ClientProfileEvent {}

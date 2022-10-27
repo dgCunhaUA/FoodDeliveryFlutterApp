@@ -1,25 +1,32 @@
+import 'package:flutter_project/client/profile/profile_submission_status.dart';
+import 'package:flutter_project/screens/loading.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/client/profile/client_profile_bloc.dart';
+import 'package:flutter_project/client/profile/client_profile_event.dart';
 import 'package:flutter_project/client/profile/client_profile_state.dart';
-import 'package:flutter_project/session_state.dart';
+import 'package:flutter_project/utils/api.dart';
 
+import '../../repositories/user_repository.dart';
 import '../../session_cubit.dart';
 
 class ClientProfileScreen extends StatelessWidget {
   const ClientProfileScreen({super.key});
-
-  void _editProfile() {}
 
   void _checkOrdersHistory() {}
 
   @override
   Widget build(BuildContext context) {
     final sessionCubit = context.read<SessionCubit>();
+    final userRepo = context.read<UserRepository>();
 
     return BlocProvider(
-      create: (context) =>
-          ClientProfileBloc(client: sessionCubit.currentClient),
+      create: (context) => ClientProfileBloc(
+        client: sessionCubit.currentClient,
+        userRepo: userRepo,
+      ),
       child: BlocBuilder<ClientProfileBloc, ClientProfileState>(
         builder: (context, state) {
           return Column(
@@ -33,25 +40,29 @@ class ClientProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 15.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: const Image(
-                            image: AssetImage("images/me.jpeg"),
-                            fit: BoxFit.contain,
-                            width: 130,
-                            height: 130,
-                          ),
-                        ),
-                      ),
+                          padding: const EdgeInsets.only(bottom: 15.0),
+                          child: _getProfileImage()),
                       Text(
                         state.client.name,
                         style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
-                      TextButton(
-                          onPressed: _editProfile,
-                          child: const Text("Editar Perfil"))
+                      state.profileEditingStatus
+                                  is ProfileInitialEditingStatus ||
+                              state.profileEditingStatus
+                                  is ProfileEditingImageTaken
+                          ? TextButton(
+                              onPressed: () => context
+                                  .read<ClientProfileBloc>()
+                                  .add(SaveProfileRequest()),
+                              child: const Text("Guardar Alterações"),
+                            )
+                          : TextButton(
+                              onPressed: () => context
+                                  .read<ClientProfileBloc>()
+                                  .add(EditProfileRequest()),
+                              child: const Text("Editar Perfil"),
+                            ),
                     ]),
               ),
               Padding(
@@ -105,6 +116,81 @@ class ClientProfileScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  Widget _getProfileImage() {
+    return BlocBuilder<ClientProfileBloc, ClientProfileState>(
+      builder: (context, state) {
+        print("builder");
+        print(state.profileEditingStatus);
+
+        if (state.profileEditingStatus is ProfileInitialEditingStatus) {
+          return InkWell(
+            onTap: (() => context
+                .read<ClientProfileBloc>()
+                .add(EditProfilePhotoRequest())),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Image.network(
+                "$urlAPI/client/photo/${state.client.id}",
+                errorBuilder: (context, error, stackTrace) {
+                  return const Image(
+                    image: AssetImage("images/me.jpeg"),
+                    fit: BoxFit.contain,
+                    width: 150,
+                    height: 130,
+                  );
+                },
+                width: 150,
+                height: 130,
+              ),
+            ),
+          );
+        } else if (state.profileEditingStatus is ProfileEditingImageTaken) {
+          return InkWell(
+            onTap: (() => context
+                .read<ClientProfileBloc>()
+                .add(EditProfilePhotoRequest())),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Image.file(
+                state.image!,
+                width: 150,
+                height: 130,
+              ),
+            ),
+          );
+        } else if (state.profileEditingStatus is ProfileEditingSubmitting) {
+          return const CircularProgressIndicator();
+        } else if (state.profileEditingStatus
+                is ProfileEditingSubmissionSuccess ||
+            state.profileEditingStatus is ProfileInitialStatus) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Image.network(
+              "$urlAPI/client/photo/${state.client.id}",
+              errorBuilder: (context, error, stackTrace) {
+                return const Image(
+                  image: AssetImage("images/me.jpeg"),
+                  fit: BoxFit.contain,
+                  width: 150,
+                  height: 130,
+                );
+              },
+              width: 150,
+              height: 130,
+            ),
+          );
+        } else {
+          return const Image(
+            image: AssetImage("images/me.jpeg"),
+            fit: BoxFit.contain,
+            width: 150,
+            height: 130,
+          );
+        }
+      },
     );
   }
 }

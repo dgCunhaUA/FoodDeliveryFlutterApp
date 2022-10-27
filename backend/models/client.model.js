@@ -34,7 +34,7 @@ const client = sequelize.define("client", {
 		type: DataTypes.STRING,
 	},
 	photo: {
-        type: DataTypes.BLOB
+        type: DataTypes.STRING
     },
 });
 
