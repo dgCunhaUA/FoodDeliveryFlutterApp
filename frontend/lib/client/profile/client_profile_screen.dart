@@ -134,8 +134,16 @@ class ClientProfileScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(100),
               child: Image.network(
                 "$urlAPI/client/photo/${state.client.id}",
+                errorBuilder: (context, error, stackTrace) {
+                  return const Image(
+                    image: AssetImage("images/me.jpeg"),
+                    fit: BoxFit.contain,
+                    width: 150,
+                    height: 130,
+                  );
+                },
                 width: 150,
-                height: 150,
+                height: 130,
               ),
             ),
           );
@@ -162,8 +170,16 @@ class ClientProfileScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
             child: Image.network(
               "$urlAPI/client/photo/${state.client.id}",
+              errorBuilder: (context, error, stackTrace) {
+                return const Image(
+                  image: AssetImage("images/me.jpeg"),
+                  fit: BoxFit.contain,
+                  width: 150,
+                  height: 130,
+                );
+              },
               width: 150,
-              height: 150,
+              height: 130,
             ),
           );
         } else {

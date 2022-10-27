@@ -3,8 +3,6 @@ const Client = require("../models/client.model");
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const fs = require('fs');
-const { param } = require("../routes/client.routes");
 
 exports.register = async (req, res) => {
 	try {
@@ -45,6 +43,7 @@ exports.register = async (req, res) => {
 		);
 		// save client token
 		client.token = token;
+		await client.save()
 
 		// return new client
 		res.status(201).json(client);
@@ -83,6 +82,7 @@ exports.login = async (req, res) => {
 
 			// save user token
 			client.token = token;
+			await client.save();
 
 			// client
 			res.status(200).json(client);
@@ -109,6 +109,10 @@ exports.upload = async (req, res) => {
 
 		client.photo = req.body["filename"];
 		await client.save();
+
+
+		console.log(client);
+		console.log(client.token);
 
 		res.status(200).send(client);
 	} catch (error) {

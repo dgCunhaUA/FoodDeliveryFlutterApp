@@ -8,7 +8,7 @@ class Client {
   late final String password;
   late final String updatedAt;
   late final String createdAt;
-  late final String? token;
+  late final String token;
   late final String? photo;
 
   Client(
@@ -31,7 +31,6 @@ class Client {
     token = json['token'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    //photo = json['photo'] != null ? Photo.fromJson(json['photo']) : null;
     photo = json['photo'];
   }
 
@@ -46,7 +45,6 @@ class Client {
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     if (photo != null) {
-      //data['photo'] = photo!.toJson();
       data['photo'] = photo;
     }
     return data;

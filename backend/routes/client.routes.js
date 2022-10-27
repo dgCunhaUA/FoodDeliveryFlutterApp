@@ -6,7 +6,6 @@ const auth = require("../middleware/auth");
 const clientController = require("../controllers/client.controller.js");
 
 const multer = require("multer");
-//const upload = multer({ dest: "uploads/" });
 var storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 	  console.log(req.body.internalUserID) // YAY, IT'S POPULATED
@@ -30,7 +29,7 @@ router.post("/login", clientController.login);
 
 router.post("/upload", upload.single("photo"), clientController.upload);
 
-//router.get("/photo/:filename", clientController.getImg);
+//router.get("/download/:filename", clientController.getImg);
 
 router.get("/photo/:id", clientController.download);
 

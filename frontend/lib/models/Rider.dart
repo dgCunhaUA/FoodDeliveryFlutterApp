@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 class Rider {
-  late int id;
-  late String name;
-  late String address;
-  late String email;
-  late String password;
-  late String vehicle;
-  late String token;
-  Uint8List? photo;
-  late String createdAt;
-  late String updatedAt;
+  late final int id;
+  late final String name;
+  late final String address;
+  late final String email;
+  late final String password;
+  late final String vehicle;
+  late final String updatedAt;
+  late final String createdAt;
+  late final String token;
+  late final String? photo;
 
   Rider(
       {required this.id,
@@ -32,7 +32,6 @@ class Rider {
     password = json['password'];
     vehicle = json['vehicle'];
     token = json['token'];
-    //photo = json['photo'] != null ? Photo.fromJson(json['photo']) : null;\
     photo = json['photo'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -48,30 +47,10 @@ class Rider {
     data['vehicle'] = vehicle;
     data['token'] = token;
     if (photo != null) {
-      //data['photo'] = photo!.toJson();
       data['photo'] = photo;
     }
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
-    return data;
-  }
-}
-
-class Photo {
-  String? type;
-  List<int>? data;
-
-  Photo({this.type, this.data});
-
-  Photo.fromJson(Map<String, dynamic> json) {
-    type = json['type'];
-    data = json['data'].cast<int>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['type'] = type;
-    data['data'] = this.data;
     return data;
   }
 }
