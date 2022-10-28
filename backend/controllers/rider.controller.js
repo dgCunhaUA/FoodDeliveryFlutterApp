@@ -3,6 +3,9 @@ const Rider = require("../models/rider.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const { dirname } = require("path");
+const appDir = dirname(require.main.filename);
+
 exports.register = async (req, res) => {
 	try {
 		// Get rider input
@@ -128,7 +131,7 @@ exports.upload = async (req, res) => {
 
 exports.getImg = async (req, res) => {
 	const filename = req.params["filename"]
-	res.sendFile("/Users/cunha/Desktop/CM/flutter_project/backend/uploads/"+filename)
+	res.sendFile(appDir+"/uploads/"+filename)
 }
 
 exports.download = async (req, res) => {
@@ -140,7 +143,7 @@ exports.download = async (req, res) => {
 	});
 
 	if( rider.photo != null)
-		res.status(200).sendFile("/Users/cunha/Desktop/CM/flutter_project/backend/uploads/"+rider.photo)
+		res.status(200).sendFile(appDir+"/uploads/"+rider.photo)
 	else
 		res.status(404).send("Foto não encontrada")
 }

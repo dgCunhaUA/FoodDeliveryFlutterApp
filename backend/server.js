@@ -17,8 +17,6 @@ app.use("/api/rider", require("./routes/rider.routes"));
 app.use("/api/restaurant", require("./routes/restaurant.routes"));
 app.use("/api/order", require("./routes/order.routes"));
 
-const rootdir = __dirname;
-
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
 });
@@ -38,4 +36,4 @@ sequelize
 		console.error("Unable to connect to the database: ", error);
 	});
 
-module.exports = { sequelize, rootdir };
+module.exports = { sequelize };
