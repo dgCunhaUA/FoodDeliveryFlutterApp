@@ -8,10 +8,10 @@ router.get("/", auth, (req, res) => {
 	res.send("hello world");
 });
 
-// Register
+// Create order
 router.post("/create", orderController.create);
 
-// Login
-//router.post("/login", clientController.login);
+// Rider accept order
+router.put("/accept", orderController.accept);
 
 module.exports = router;

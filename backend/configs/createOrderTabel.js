@@ -1,15 +1,18 @@
-//const sequelize = require('../server.js');
-//const DataTypes = require('sequelize');
 const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = new Sequelize(
-    'proj1',
-    'root',
-    'root',
-     {
-       host: 'localhost',
-       dialect: 'mysql'
-     }
-   );
+
+const sequelize = new Sequelize("proj1", "root", "root", {
+	host: "localhost",
+	dialect: "mysql",
+});
+
+sequelize
+	.authenticate()
+	.then(() => {
+		console.log("Connection has been established successfully.");
+	})
+	.catch((error) => {
+		console.error("Unable to connect to the database: ", error);
+	});
 
 const order = sequelize.define("order", {
 	restaurant_name: {
@@ -28,7 +31,7 @@ const order = sequelize.define("order", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
-    client_address: {
+	client_address: {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
@@ -41,10 +44,13 @@ const order = sequelize.define("order", {
 	rider_lng: {
 		type: DataTypes.DECIMAL
 	}
-
-	/* rider_location: {
-		type: DataTypes.GEOMETRY
-	} */
 });
 
-module.exports = sequelize.model("order", order)
+sequelize
+	.sync()
+	.then(() => {
+		console.log("Client table created successfully!");
+	})
+	.catch((error) => {
+		console.error("Unable to create table : ", error);
+	});

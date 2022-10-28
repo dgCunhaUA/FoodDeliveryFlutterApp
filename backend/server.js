@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/client", require("./routes/client.routes"));
 app.use("/api/rider", require("./routes/rider.routes"));
 app.use("/api/restaurant", require("./routes/restaurant.routes"));
+app.use("/api/order", require("./routes/order.routes"));
 
 const rootdir = __dirname;
 
