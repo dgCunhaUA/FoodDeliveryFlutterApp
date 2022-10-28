@@ -40,11 +40,10 @@ const order = sequelize.define("order", {
 	},
 	rider_lng: {
 		type: DataTypes.DECIMAL
-	}
-
-	/* rider_location: {
-		type: DataTypes.GEOMETRY
-	} */
+	},
+	order_status: {
+		type: DataTypes.STRING
+	},
 });
 
 module.exports = sequelize.model("order", order)

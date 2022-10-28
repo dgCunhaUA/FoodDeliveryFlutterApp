@@ -39,11 +39,14 @@ const order = sequelize.define("order", {
 		type: DataTypes.STRING,
 	},
 	rider_lat: {
-		type: DataTypes.DECIMAL
+		type: DataTypes.DECIMAL,
 	},
 	rider_lng: {
-		type: DataTypes.DECIMAL
-	}
+		type: DataTypes.DECIMAL,
+	},
+	order_status: {
+		type: DataTypes.STRING,
+	},
 });
 
 sequelize

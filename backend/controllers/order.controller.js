@@ -26,6 +26,7 @@ exports.create = async (req, res) => {
 			res.status(400).send("All input is required");
 		}
 
+		const order_status = "Waiting";
 		// Create order in our database
 		const order = await Order.create({
 			restaurant_name,
@@ -33,6 +34,7 @@ exports.create = async (req, res) => {
 			client_id,
 			client_name,
 			client_address,
+			order_status,
 		});
 
 		// return new order
@@ -44,17 +46,10 @@ exports.create = async (req, res) => {
 
 exports.accept = async (req, res) => {
 	try {
-		const { order_id, rider_name, rider_lat, rider_lng} = req.body;
-		
+		const { order_id, rider_name, rider_lat, rider_lng, order_status } = req.body;
+
 		// Validate order input
-		if (
-			!(
-				order_id &&
-				rider_name &&
-				rider_lat &&
-				rider_lng
-			)
-		) {
+		if (!(order_id && rider_name && rider_lat && rider_lng && order_status)) {
 			res.status(400).send("All input is required");
 		}
 
@@ -65,18 +60,23 @@ exports.accept = async (req, res) => {
 			},
 		});
 
-		if(order == null) {
+		if (order == null) {
 			res.status(400).send("Order doesnt exist");
 		}
 
-		// Create order in our database
-		order.rider_name = rider_name;
-		order.rider_lat = rider_lat;
-		order.rider_lng = rider_lng;
-		const updatedOrder = await order.save();
+		if(order.order_status != "Delivering") {
+			// Create order in our database
+			order.rider_name = rider_name;
+			order.rider_lat = rider_lat;
+			order.rider_lng = rider_lng;
+			order.order_status = order_status;
+			const updatedOrder = await order.save();
 
-		// return new order
-		res.status(201).json(updatedOrder);
+			// return new order
+			res.status(201).json(updatedOrder);
+		} else {
+			res.status(400).send("Order already being delivered");
+		}
 	} catch (err) {
 		console.log(err);
 	}
