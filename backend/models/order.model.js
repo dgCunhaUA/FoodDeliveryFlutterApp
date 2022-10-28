@@ -20,6 +20,10 @@ const order = sequelize.define("order", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
+	client_id: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+	},
 	client_name: {
 		type: DataTypes.STRING,
 		allowNull: false,
@@ -28,8 +32,17 @@ const order = sequelize.define("order", {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
-	rider: {
+	rider_name: {
 		type: DataTypes.STRING,
+	},
+	rider_lat: {
+		type: DataTypes.DECIMAL
+	},
+	rider_lng: {
+		type: DataTypes.DECIMAL
+	},
+	order_status: {
+		type: DataTypes.STRING
 	},
 });
 

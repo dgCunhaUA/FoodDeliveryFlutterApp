@@ -15,8 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/client", require("./routes/client.routes"));
 app.use("/api/rider", require("./routes/rider.routes"));
 app.use("/api/restaurant", require("./routes/restaurant.routes"));
-
-const rootdir = __dirname;
+app.use("/api/order", require("./routes/order.routes"));
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
@@ -37,4 +36,4 @@ sequelize
 		console.error("Unable to connect to the database: ", error);
 	});
 
-module.exports = { sequelize, rootdir };
+module.exports = { sequelize };
