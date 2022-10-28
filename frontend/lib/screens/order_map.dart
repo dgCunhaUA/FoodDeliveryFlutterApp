@@ -80,7 +80,7 @@ class _OrderMapState extends State<OrderMap> {
     }
   }
 
-  void getPolyPoints() async {
+  /* void getPolyPoints() async {
     PolylinePoints polylinePoints = PolylinePoints();
 
     LatLng source =
@@ -100,7 +100,7 @@ class _OrderMapState extends State<OrderMap> {
         }
       }
     });
-  }
+  } */
 
   @override
   void dispose() {
@@ -126,13 +126,13 @@ class _OrderMapState extends State<OrderMap> {
               myLocationEnabled: true,
               polylines: polyLines,
             ),
-      floatingActionButton: FloatingActionButton(
+      /* floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.black,
         onPressed: (() => _googleMapController
             .animateCamera(CameraUpdate.newCameraPosition(_initialPosition))),
         child: const Icon(Icons.center_focus_strong),
-      ),
+      ), */
     );
   }
 }

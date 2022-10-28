@@ -7,7 +7,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../models/Rider.dart';
 import '../models/Client.dart';
-import '../models/User.dart';
 
 class UserRepository {
   final Dio _dio = Dio();

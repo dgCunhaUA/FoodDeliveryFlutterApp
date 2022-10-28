@@ -4,7 +4,6 @@ import 'package:flutter_project/repositories/user_repository.dart';
 
 import 'auth/auth_credentials.dart';
 import 'models/Client.dart';
-import 'models/User.dart';
 import 'session_state.dart';
 
 class SessionCubit extends Cubit<SessionState> {

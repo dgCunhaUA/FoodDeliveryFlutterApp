@@ -7,7 +7,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import '../../models/Rider.dart';
 import '../../models/Client.dart';
-import '../../models/User.dart';
 import '../auth_credentials.dart';
 import '../auth_cubit.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter_project/screens/home_page.dart';
 import 'package:flutter_project/screens/orders.dart';
 import 'package:flutter_project/screens/search_screen.dart';
 import 'package:flutter_project/screens/wallet.dart';
-import 'package:flutter_project/screens/shopping_cart.dart';
+import 'package:flutter_project/client/cart/shopping_cart.dart';
 import 'package:flutter_project/session_cubit.dart';
 import 'package:flutter_project/session_state.dart';
 
@@ -65,7 +65,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
             const HomePage(),
             SearchScreen(),
             const ShoppingCart(),
-            ClientProfileScreen()
+            const ClientProfileScreen()
           ];
 
           tabbarItem = <BottomNavigationBarItem>[

@@ -120,9 +120,6 @@ class RiderProfileScreen extends StatelessWidget {
   Widget _getProfileImage() {
     return BlocBuilder<RiderProfileBloc, RiderProfileState>(
       builder: (context, state) {
-        print(state.profileEditingStatus);
-        print(state.image);
-
         if (state.profileEditingStatus is ProfileInitialEditingStatus) {
           return InkWell(
             onTap: (() => context

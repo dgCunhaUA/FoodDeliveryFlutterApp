@@ -23,12 +23,8 @@ class AppNavigator extends StatelessWidget {
 
           // Show auth flow
           if (state is Unauthenticated)
-            MaterialPage(
-              child: BlocProvider(
-                create: (context) =>
-                    AuthCubit(sessionCubit: context.read<SessionCubit>()),
-                child: const AuthNavigator(),
-              ),
+            const MaterialPage(
+              child: AuthNavigator(),
             ),
 
           // Show session flow
