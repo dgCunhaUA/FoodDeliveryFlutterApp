@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class Client {
   late final int id;
   late final String name;
@@ -47,25 +45,6 @@ class Client {
     if (photo != null) {
       data['photo'] = photo;
     }
-    return data;
-  }
-}
-
-class Photo {
-  String? type;
-  List<int>? data;
-
-  Photo({this.type, this.data});
-
-  Photo.fromJson(Map<String, dynamic> json) {
-    type = json['type'];
-    data = json['data'].cast<int>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['type'] = type;
-    data['data'] = this.data;
     return data;
   }
 }

@@ -56,7 +56,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         userId: client.id,
       ));
     } on Exception catch (e) {
-      print(e);
       //emit(state.copyWith(formStatus: SubmissionFailed(e)));
     }
 

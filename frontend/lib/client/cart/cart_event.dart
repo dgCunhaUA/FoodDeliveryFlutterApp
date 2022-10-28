@@ -4,7 +4,13 @@ part of 'cart_bloc.dart';
 abstract class CartEvent {}
 
 class AddItemToCart extends CartEvent {
-  final String item;
+  final Item item;
 
   AddItemToCart({required this.item});
+}
+
+class RemoveItemFromCart extends CartEvent {
+  final Item item;
+
+  RemoveItemFromCart({required this.item});
 }

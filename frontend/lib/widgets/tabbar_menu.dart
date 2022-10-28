@@ -79,7 +79,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),
-              label: 'Carrinhos',
+              label: 'Carrinho',
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.person),
