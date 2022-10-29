@@ -7,7 +7,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import '../../models/Rider.dart';
 import '../../models/Client.dart';
-import '../../models/User.dart';
 import '../auth_credentials.dart';
 import '../auth_cubit.dart';
 
@@ -57,7 +56,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         userId: client.id,
       ));
     } on Exception catch (e) {
-      print(e);
       //emit(state.copyWith(formStatus: SubmissionFailed(e)));
     }
 

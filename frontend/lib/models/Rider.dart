@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class Rider {
   late final int id;
   late final String name;

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/auth/auth_cubit.dart';
 import 'package:flutter_project/auth/signup/signup_screen.dart';
 
-import '../screens/login.dart';
+import 'login/login_screen.dart';
 
 class AuthNavigator extends StatelessWidget {
   const AuthNavigator({super.key});

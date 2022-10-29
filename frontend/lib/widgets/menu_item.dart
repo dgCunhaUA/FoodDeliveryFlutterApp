@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_project/client/cart/cart_bloc.dart';
+import 'package:flutter_project/models/Item.dart';
 
 class FoodMenuItem extends StatelessWidget {
   final info;
@@ -8,7 +11,7 @@ class FoodMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -17,18 +20,57 @@ class FoodMenuItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                this.info["name"],
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                info["name"],
+                style:
+                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
               Text(
-                this.info["desc"],
+                info["desc"],
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
+          InkWell(
+            onTap: () => {
+              context.read<CartBloc>().add(
+                    AddItemToCart(
+                      item: Item(
+                        info["name"],
+                        info["desc"],
+                        info["price"],
+                        info["img"],
+                      ),
+                    ),
+                  ),
+            },
+            child: const Icon(
+              Icons.add,
+              color: Colors.green,
+              size: 30.0,
+            ),
+          ),
+          InkWell(
+            onTap: () => {
+              context.read<CartBloc>().add(
+                    RemoveItemFromCart(
+                      item: Item(
+                        info["name"],
+                        info["desc"],
+                        info["price"],
+                        info["img"],
+                      ),
+                    ),
+                  ),
+            },
+            child: const Icon(
+              Icons.minimize,
+              color: Colors.green,
+              size: 30.0,
+            ),
+          ),
           Image(
-            image: AssetImage("images/" + this.info["img"]),
+            image: AssetImage("images/${info["img"]}"),
             fit: BoxFit.cover,
             height: MediaQuery.of(context).size.width / 4,
             width: MediaQuery.of(context).size.width / 4,
