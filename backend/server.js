@@ -37,3 +37,5 @@ sequelize
 	});
 
 module.exports = { sequelize };
+
+

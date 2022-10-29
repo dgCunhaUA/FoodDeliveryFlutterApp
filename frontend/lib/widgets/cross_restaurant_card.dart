@@ -13,7 +13,8 @@ class CrossRestaurantCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
-            child: Image.network("images/" + this.info["img"],
+            child: Image(
+                image: AssetImage("images/" + this.info["img"]),
                 fit: BoxFit.cover,
                 height: MediaQuery.of(context).size.width / 2.5,
                 width: MediaQuery.of(context).size.width / 1.6),

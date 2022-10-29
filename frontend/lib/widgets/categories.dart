@@ -16,19 +16,9 @@ class Categories extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                FoodCategory(title: "Pizza", cover: "img37.jpg"),
-                FoodCategory(title: "Sushi", cover: "img40.jpg"),
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.width * 0.025),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                FoodCategorySM(title: "Pizza", cover: "img37.jpg"),
-                FoodCategorySM(title: "Sushi", cover: "img40.jpg"),
+                FoodCategory(
+                    title: "Restaurantes", cover: "restaurant_icon.png"),
+                FoodCategory(title: "Mercearia", cover: "grocery_icon.png"),
               ],
             ),
           ),

@@ -16,15 +16,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   FocusNode _focus = FocusNode();
-  var isFocus = false;
+
+  List info_rest = restaurants;
+  List hor_info_rest = restaurants.toList();
 
   TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    isFocus = false;
     _focus.addListener(_onFocusChange);
+    info_rest = restaurants;
+    hor_info_rest.shuffle();
   }
 
   @override
@@ -40,13 +43,26 @@ class _HomePageState extends State<HomePage> {
     debugPrint("Focus: ${_focus.hasFocus.toString()}");
   }
 
+  void filterRestaurants(rest_name) {
+    setState(() {
+      if (rest_name == "") {
+        info_rest = restaurants;
+      } else {
+        info_rest = restaurants
+            .where((i) =>
+                i["name"].toString().toLowerCase().contains(RegExp(rest_name)))
+            .toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       // Uncomment to change the background color
       // backgroundColor: CupertinoColors.systemPink,
       navigationBar: const CupertinoNavigationBar(
-        middle: Text('Restaurantes'),
+        middle: Text('DeliveryApp'),
       ),
       child: Container(
         margin: const EdgeInsets.only(top: 0),
@@ -55,40 +71,19 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                  margin: EdgeInsets.fromLTRB(15, 55, 15, 15),
+                  margin: EdgeInsets.fromLTRB(15, 105, 15, 15),
                   child: TextField(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Pesquisar',
                     ),
                     focusNode: _focus,
+                    onChanged: (value) {
+                      filterRestaurants(value);
+                    },
                   )),
               Container(
                   child: _focus.hasFocus == false ? const Categories() : null),
-              Flexible(
-                child: MediaQuery.removePadding(
-                  context: context,
-                  removeTop: true,
-                  child: ListView.builder(
-                    itemCount: restaurants.sublist(0, 2).length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) => ListTile(
-                      title: InkWell(
-                        child: RestaurantCard(
-                            info: restaurants.sublist(0, 2)[index]),
-                        onTap: () {
-                          showCupertinoModalBottomSheet(
-                            context: context,
-                            builder: (context) => RestaurantDetails(
-                                info: restaurants.sublist(0, 2)[index]),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ),
               Container(
                 margin: const EdgeInsets.only(bottom: 20),
                 child: _focus.hasFocus == false
@@ -96,8 +91,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Padding(
-                            padding:
-                                EdgeInsets.only(left: 20, bottom: 10, top: 30),
+                            padding: EdgeInsets.only(left: 20, bottom: 10),
                             child: Text(
                               "Recomendações para si",
                               style: TextStyle(
@@ -114,8 +108,17 @@ class _HomePageState extends State<HomePage> {
                               itemBuilder: (context, index) => Container(
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 5),
-                                child: CrossRestaurantCard(
-                                    info: restaurants[index]),
+                                child: InkWell(
+                                  child: CrossRestaurantCard(
+                                      info: hor_info_rest[index]),
+                                  onTap: () {
+                                    showCupertinoModalBottomSheet(
+                                      context: context,
+                                      builder: (context) => RestaurantDetails(
+                                          info: hor_info_rest[index]),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -128,17 +131,17 @@ class _HomePageState extends State<HomePage> {
                   context: context,
                   removeTop: true,
                   child: ListView.builder(
-                    itemCount: restaurants.sublist(2, 3).length,
+                    itemCount: info_rest.length,
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) => ListTile(
                       title: InkWell(
-                        child: RestaurantCard(
-                            info: restaurants.sublist(2, 3)[index]),
+                        child: RestaurantCard(info: info_rest[index]),
                         onTap: () {
                           showCupertinoModalBottomSheet(
                             context: context,
-                            builder: (context) => RestaurantDetails(
-                                info: restaurants.sublist(2, 3)[index]),
+                            builder: (context) =>
+                                RestaurantDetails(info: info_rest[index]),
                           );
                         },
                       ),
