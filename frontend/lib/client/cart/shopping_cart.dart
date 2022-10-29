@@ -63,17 +63,6 @@ class ShoppingCart extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        //TODO: BUG
-                        /* Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const TabBarMenu(),
-                          ),
-                        ); */
-                      },
-                      child: const Text("Faça Compras (bug)")),
                 ],
               );
             } else {

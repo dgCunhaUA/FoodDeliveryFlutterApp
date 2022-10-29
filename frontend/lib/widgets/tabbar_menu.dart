@@ -63,7 +63,6 @@ class _TabBarMenuState extends State<TabBarMenu> {
         if (state is ClientAuthenticated) {
           widgetOptions = <Widget>[
             const HomePage(),
-            SearchScreen(),
             const ShoppingCart(),
             const ClientProfileScreen()
           ];
@@ -72,10 +71,6 @@ class _TabBarMenuState extends State<TabBarMenu> {
             const BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Página Inicial',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.manage_search),
-              label: 'Procurar',
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),

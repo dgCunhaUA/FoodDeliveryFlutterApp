@@ -15,13 +15,54 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FocusNode _focus = FocusNode();
+
+  List info_rest = restaurants;
+  List hor_info_rest = restaurants.toList();
+
+  TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(_onFocusChange);
+    info_rest = restaurants;
+    hor_info_rest.shuffle();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _focus.removeListener(_onFocusChange);
+    _focus.dispose();
+  }
+
+  void _onFocusChange() {
+    setState(() {});
+
+    debugPrint("Focus: ${_focus.hasFocus.toString()}");
+  }
+
+  void filterRestaurants(rest_name) {
+    setState(() {
+      if (rest_name == "") {
+        info_rest = restaurants;
+      } else {
+        info_rest = restaurants
+            .where((i) =>
+                i["name"].toString().toLowerCase().contains(RegExp(rest_name)))
+            .toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       // Uncomment to change the background color
       // backgroundColor: CupertinoColors.systemPink,
       navigationBar: const CupertinoNavigationBar(
-        middle: Text('Restaurantes'),
+        middle: Text('DeliveryApp'),
       ),
       child: Container(
         margin: const EdgeInsets.only(top: 0),
@@ -30,76 +71,77 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                  margin: const EdgeInsets.only(top: 35),
-                  child: const Categories()),
+                  margin: EdgeInsets.fromLTRB(15, 105, 15, 15),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Pesquisar',
+                    ),
+                    focusNode: _focus,
+                    onChanged: (value) {
+                      filterRestaurants(value);
+                    },
+                  )),
+              Container(
+                  child: _focus.hasFocus == false ? const Categories() : null),
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                child: _focus.hasFocus == false
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 20, bottom: 10),
+                            child: Text(
+                              "Recomendações para si",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700, fontSize: 20),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 190,
+                            child: ListView.builder(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              itemCount: 3,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) => Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                child: InkWell(
+                                  child: CrossRestaurantCard(
+                                      info: hor_info_rest[index]),
+                                  onTap: () {
+                                    showCupertinoModalBottomSheet(
+                                      context: context,
+                                      builder: (context) => RestaurantDetails(
+                                          info: hor_info_rest[index]),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : null,
+              ),
               Flexible(
                 child: MediaQuery.removePadding(
                   context: context,
                   removeTop: true,
                   child: ListView.builder(
-                    itemCount: restaurants.sublist(0, 2).length,
+                    itemCount: info_rest.length,
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) => ListTile(
                       title: InkWell(
-                        child: RestaurantCard(
-                            info: restaurants.sublist(0, 2)[index]),
+                        child: RestaurantCard(info: info_rest[index]),
                         onTap: () {
                           showCupertinoModalBottomSheet(
                             context: context,
-                            builder: (context) => RestaurantDetails(
-                                info: restaurants.sublist(0, 2)[index]),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 20, bottom: 10, top: 30),
-                      child: Text(
-                        "Recomendações para si",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 20),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 190,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        itemCount: 3,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 5),
-                          child: CrossRestaurantCard(info: restaurants[index]),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Flexible(
-                child: MediaQuery.removePadding(
-                  context: context,
-                  removeTop: true,
-                  child: ListView.builder(
-                    itemCount: restaurants.sublist(2, 3).length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) => ListTile(
-                      title: InkWell(
-                        child: RestaurantCard(
-                            info: restaurants.sublist(2, 3)[index]),
-                        onTap: () {
-                          showCupertinoModalBottomSheet(
-                            context: context,
-                            builder: (context) => RestaurantDetails(
-                                info: restaurants.sublist(2, 3)[index]),
+                            builder: (context) =>
+                                RestaurantDetails(info: info_rest[index]),
                           );
                         },
                       ),
