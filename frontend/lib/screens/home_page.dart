@@ -15,6 +15,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FocusNode _focus = FocusNode();
+  var isFocus = false;
+
+  TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    isFocus = false;
+    _focus.addListener(_onFocusChange);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _focus.removeListener(_onFocusChange);
+    _focus.dispose();
+  }
+
+  void _onFocusChange() {
+    setState(() {});
+
+    debugPrint("Focus: ${_focus.hasFocus.toString()}");
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -30,8 +55,16 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                  margin: const EdgeInsets.only(top: 35),
-                  child: const Categories()),
+                  margin: EdgeInsets.fromLTRB(15, 55, 15, 15),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Pesquisar',
+                    ),
+                    focusNode: _focus,
+                  )),
+              Container(
+                  child: _focus.hasFocus == false ? const Categories() : null),
               Flexible(
                 child: MediaQuery.removePadding(
                   context: context,
@@ -58,31 +91,37 @@ class _HomePageState extends State<HomePage> {
               ),
               Container(
                 margin: const EdgeInsets.only(bottom: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 20, bottom: 10, top: 30),
-                      child: Text(
-                        "Recomendações para si",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 20),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 190,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        itemCount: 3,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 5),
-                          child: CrossRestaurantCard(info: restaurants[index]),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: _focus.hasFocus == false
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding:
+                                EdgeInsets.only(left: 20, bottom: 10, top: 30),
+                            child: Text(
+                              "Recomendações para si",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700, fontSize: 20),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 190,
+                            child: ListView.builder(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              itemCount: 3,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) => Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                child: CrossRestaurantCard(
+                                    info: restaurants[index]),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : null,
               ),
               Flexible(
                 child: MediaQuery.removePadding(
