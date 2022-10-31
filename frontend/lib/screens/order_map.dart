@@ -2,15 +2,27 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_project/screens/loading.dart';
 import 'package:flutter_project/utils/api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project/widgets/order_card.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import '../utils/directions_helper.dart';
 
-class OrderMap extends StatefulWidget {
-  final String destinationAddress;
+final item = [
+  {
+    'id': 'jpxcQ00rLy',
+    "price": 27.82,
+    "time": 26,
+    "distance": 4.7,
+    "restaurant": "La Grotta",
+    "destination": "Universidade de Aveiro, 3810-193 Aveiro"
+  }
+];
 
-  const OrderMap({super.key, required this.destinationAddress});
+class OrderMap extends StatefulWidget {
+  final destinationAddress;
+
+  const OrderMap({super.key, this.destinationAddress});
 
   @override
   State<OrderMap> createState() => _OrderMapState();
@@ -30,9 +42,12 @@ class _OrderMapState extends State<OrderMap> {
   final List<LatLng> polyPoints = []; // For holding Co-ordinates as LatLng
   final Set<Polyline> polyLines = {}; // For holding instance of Polyline
   var data;
+  String destAdress = "null";
 
   @override
   void initState() {
+    destAdress = widget.destinationAddress;
+
     _getDestCoords();
 
     super.initState();
@@ -42,7 +57,7 @@ class _OrderMapState extends State<OrderMap> {
     DirectionsHelper dirHelper =
         DirectionsHelper(startLat: 0, startLng: 0, endLat: 0, endLng: 0);
 
-    _destination = await dirHelper.getCoords(widget.destinationAddress);
+    _destination = await dirHelper.getCoords(destAdress);
     setState(() {});
 
     _getCurrentLocation();
@@ -108,24 +123,77 @@ class _OrderMapState extends State<OrderMap> {
     super.dispose();
   }
 
+  void showOrderModal() {
+    showModalBottomSheet(
+      context: context,
+      elevation: 2,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              color: Colors.white),
+          margin: EdgeInsets.fromLTRB(15, 0, 15, 70),
+          height: 320,
+          child: OrderCard(
+            item_info: item[0],
+          ),
+        );
+      },
+    ).then((value) {
+      destAdress = value;
+      _getDestCoords();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Mapa")),
       body: _currentPosition == null
           ? const LoadingScreen()
-          : GoogleMap(
-              myLocationButtonEnabled: true,
-              zoomControlsEnabled: true,
-              mapToolbarEnabled: false,
-              initialCameraPosition: _initialPosition,
-              onMapCreated: (controller) => {_googleMapController = controller},
-              markers: {
-                Marker(markerId: const MarkerId("dest"), position: _destination)
-              },
-              myLocationEnabled: true,
-              polylines: polyLines,
-            ),
+          : Stack(children: [
+              destAdress != "null"
+                  ? GoogleMap(
+                      myLocationButtonEnabled: true,
+                      zoomControlsEnabled: true,
+                      mapToolbarEnabled: false,
+                      initialCameraPosition: _initialPosition,
+                      onMapCreated: (controller) =>
+                          {_googleMapController = controller},
+                      markers: {
+                        Marker(
+                            markerId: const MarkerId("dest"),
+                            position: _destination)
+                      },
+                      myLocationEnabled: true,
+                      polylines: polyLines,
+                    )
+                  : GoogleMap(
+                      myLocationButtonEnabled: true,
+                      zoomControlsEnabled: true,
+                      mapToolbarEnabled: false,
+                      initialCameraPosition: _initialPosition,
+                      onMapCreated: (controller) =>
+                          {_googleMapController = controller},
+                      myLocationEnabled: true,
+                    ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 15),
+                    child: Center(
+                      child: ElevatedButton(
+                          onPressed: () {
+                            showOrderModal();
+                          },
+                          child: Text("Novos Pedidos (1)")),
+                    ),
+                  ),
+                ],
+              )
+            ]),
       /* floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.black,
