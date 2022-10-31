@@ -24,13 +24,18 @@ class _OrderCardState extends State<OrderCard> {
             children: [
               ElevatedButton.icon(
                 onPressed: () => {
-                  if (isValidated == null)
+                  if (isValidated != null)
                     {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const ValidateOrder(),
                         ),
                       )
+                    }
+                  else
+                    {
+                      Navigator.pop(
+                          context, "Universidade de Aveiro, 3810-193 Aveiro")
                     }
                 },
                 icon: isValidated != null

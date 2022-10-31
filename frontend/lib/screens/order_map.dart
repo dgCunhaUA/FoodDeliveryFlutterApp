@@ -42,9 +42,12 @@ class _OrderMapState extends State<OrderMap> {
   final List<LatLng> polyPoints = []; // For holding Co-ordinates as LatLng
   final Set<Polyline> polyLines = {}; // For holding instance of Polyline
   var data;
+  String destAdress = "null";
 
   @override
   void initState() {
+    destAdress = widget.destinationAddress;
+
     _getDestCoords();
 
     super.initState();
@@ -54,7 +57,7 @@ class _OrderMapState extends State<OrderMap> {
     DirectionsHelper dirHelper =
         DirectionsHelper(startLat: 0, startLng: 0, endLat: 0, endLng: 0);
 
-    _destination = await dirHelper.getCoords(widget.destinationAddress);
+    _destination = await dirHelper.getCoords(destAdress);
     setState(() {});
 
     _getCurrentLocation();
@@ -121,7 +124,7 @@ class _OrderMapState extends State<OrderMap> {
   }
 
   void showOrderModal() {
-    showModalBottomSheet<void>(
+    showModalBottomSheet(
       context: context,
       elevation: 2,
       barrierColor: Colors.transparent,
@@ -137,7 +140,10 @@ class _OrderMapState extends State<OrderMap> {
           ),
         );
       },
-    );
+    ).then((value) {
+      destAdress = value;
+      _getDestCoords();
+    });
   }
 
   @override
@@ -146,10 +152,10 @@ class _OrderMapState extends State<OrderMap> {
       body: _currentPosition == null
           ? const LoadingScreen()
           : Stack(children: [
-              widget.destinationAddress != null
+              destAdress != "null"
                   ? GoogleMap(
                       myLocationButtonEnabled: true,
-                      zoomControlsEnabled: false,
+                      zoomControlsEnabled: true,
                       mapToolbarEnabled: false,
                       initialCameraPosition: _initialPosition,
                       onMapCreated: (controller) =>
@@ -164,7 +170,7 @@ class _OrderMapState extends State<OrderMap> {
                     )
                   : GoogleMap(
                       myLocationButtonEnabled: true,
-                      zoomControlsEnabled: false,
+                      zoomControlsEnabled: true,
                       mapToolbarEnabled: false,
                       initialCameraPosition: _initialPosition,
                       onMapCreated: (controller) =>
