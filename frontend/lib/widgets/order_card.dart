@@ -19,11 +19,7 @@ class _OrderCardState extends State<OrderCard> {
   Widget build(BuildContext context) {
     return Container(
       child: Container(
-          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
           padding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              color: Color.fromARGB(255, 227, 227, 233)),
           child: Column(
             children: [
               ElevatedButton.icon(
@@ -38,11 +34,11 @@ class _OrderCardState extends State<OrderCard> {
                     }
                 },
                 icon: isValidated != null
-                    ? Icon(Icons.check)
-                    : Icon(Icons.qr_code),
+                    ? Icon(Icons.qr_code)
+                    : Icon(Icons.delivery_dining),
                 label: isValidated != null
-                    ? Text("Validado")
-                    : Text("Validar entrega"),
+                    ? Text("Confimar Entrega")
+                    : Text("Iniciar Entrega"),
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(255, 84, 204, 124),
                     foregroundColor: Colors.white,
@@ -66,21 +62,6 @@ class _OrderCardState extends State<OrderCard> {
                     ),
                   ],
                 ),
-              ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.timer,
-                    color: Colors.black,
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 4),
-                    child: Text(item_info["time"].toString() +
-                        "min (" +
-                        item_info["distance"].toString() +
-                        "km) no total"),
-                  ),
-                ],
               ),
               Container(
                 margin: EdgeInsets.only(top: 20),
