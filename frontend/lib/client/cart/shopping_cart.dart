@@ -107,7 +107,9 @@ class ShoppingCart extends StatelessWidget {
                         InkWell(
                           onTap: () => {
                             context.read<CartBloc>().add(
-                                  AddItemToCart(item: state.items[index]),
+                                  AddItemToCart(
+                                      item: state.items[index],
+                                      restaurant: state.restaurant),
                                 ),
                             if (state.cartManageStatus is CartAddSuccess)
                               {
@@ -129,7 +131,9 @@ class ShoppingCart extends StatelessWidget {
                         InkWell(
                           onTap: () => {
                             context.read<CartBloc>().add(
-                                  RemoveItemFromCart(item: state.items[index]),
+                                  RemoveItemFromCart(
+                                      item: state.items[index],
+                                      restaurant: state.restaurant),
                                 ),
                             if (state.cartManageStatus is CartRemoveSuccess)
                               {

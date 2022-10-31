@@ -4,28 +4,36 @@ enum CartStatus { empty, notEmpty }
 
 class CartState {
   final List<Item> items;
+  final String restaurant;
   CartManageStatus cartManageStatus;
   CartStatus cartStatus;
 
   CartState({
     required this.items,
+    required this.restaurant,
     this.cartManageStatus = const CartInitialStatus(),
     this.cartStatus = CartStatus.empty,
   });
 
-  CartState addItem({
-    Item? item,
-  }) {
-    if (item != null) {
-      items.add(item);
+  CartState setCartManageStatus({required CartManageStatus cartManageStatus}) {
+    return CartState(
+      restaurant: restaurant,
+      items: items,
+      cartManageStatus: cartManageStatus,
+      cartStatus: cartStatus,
+    );
+  }
 
-      if (items.contains(item)) {
-        cartManageStatus = CartAddSuccess();
-      } else {
-        cartManageStatus = CartAddFailed();
-      }
+  CartState addItem({
+    required Item item,
+    required String restaurant,
+  }) {
+    items.add(item);
+
+    if (items.contains(item)) {
+      cartManageStatus = CartAddSuccess();
     } else {
-      cartManageStatus = CartAddFailed();
+      cartManageStatus = CartAddFailed('Erro ao adicionar');
     }
 
     if (items.isEmpty) {
@@ -35,6 +43,7 @@ class CartState {
     }
 
     return CartState(
+      restaurant: restaurant,
       items: items,
       cartManageStatus: cartManageStatus,
       cartStatus: cartStatus,
@@ -42,7 +51,8 @@ class CartState {
   }
 
   CartState removeItem({
-    Item? item,
+    required Item item,
+    required String restaurant,
   }) {
     if (items.remove(item)) {
       cartManageStatus = CartRemoveSuccess();
@@ -52,11 +62,13 @@ class CartState {
 
     if (items.isEmpty) {
       cartStatus = CartStatus.empty;
+      restaurant = "";
     } else {
       cartStatus = CartStatus.notEmpty;
     }
 
     return CartState(
+      restaurant: restaurant,
       items: items,
       cartManageStatus: cartManageStatus,
       cartStatus: cartStatus,

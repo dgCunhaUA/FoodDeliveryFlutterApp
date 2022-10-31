@@ -8,7 +8,11 @@ class CartInitialStatus extends CartManageStatus {
 
 class CartAddSuccess extends CartManageStatus {}
 
-class CartAddFailed extends CartManageStatus {}
+class CartAddFailed extends CartManageStatus {
+  String message;
+
+  CartAddFailed(this.message);
+}
 
 class CartRemoveSuccess extends CartManageStatus {}
 
