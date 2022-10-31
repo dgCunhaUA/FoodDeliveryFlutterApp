@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/client/profile/client_profile_screen.dart';
 import 'package:flutter_project/screens/home_page.dart';
 import 'package:flutter_project/screens/orders.dart';
-import 'package:flutter_project/screens/search_screen.dart';
 import 'package:flutter_project/screens/wallet.dart';
 import 'package:flutter_project/client/cart/shopping_cart.dart';
 import 'package:flutter_project/session_cubit.dart';
