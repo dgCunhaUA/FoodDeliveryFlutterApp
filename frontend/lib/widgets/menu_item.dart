@@ -6,7 +6,8 @@ import 'package:flutter_project/models/Item.dart';
 
 class FoodMenuItem extends StatelessWidget {
   final info;
-  const FoodMenuItem({super.key, required this.info});
+  final restaurant;
+  const FoodMenuItem({super.key, required this.info, required this.restaurant});
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +36,13 @@ class FoodMenuItem extends StatelessWidget {
             onTap: () => {
               context.read<CartBloc>().add(
                     AddItemToCart(
-                      item: Item(
-                        info["name"],
-                        info["desc"],
-                        info["price"],
-                        info["img"],
-                      ),
-                    ),
+                        item: Item(
+                          info["name"],
+                          info["desc"],
+                          info["price"],
+                          info["img"],
+                        ),
+                        restaurant: restaurant),
                   ),
             },
             child: const Icon(
@@ -54,13 +55,13 @@ class FoodMenuItem extends StatelessWidget {
             onTap: () => {
               context.read<CartBloc>().add(
                     RemoveItemFromCart(
-                      item: Item(
-                        info["name"],
-                        info["desc"],
-                        info["price"],
-                        info["img"],
-                      ),
-                    ),
+                        item: Item(
+                          info["name"],
+                          info["desc"],
+                          info["price"],
+                          info["img"],
+                        ),
+                        restaurant: restaurant),
                   ),
             },
             child: const Icon(

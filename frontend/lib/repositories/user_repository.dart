@@ -159,6 +159,7 @@ class UserRepository {
       }
       throw Exception("Login Error");
     } on DioError catch (e) {
+      print(e);
       if (e.response!.statusCode == 400) {
         throw Exception("Password Incorreta");
       }

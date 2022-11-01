@@ -30,13 +30,6 @@ class ShoppingCart extends StatelessWidget {
         },
         body: BlocBuilder<CartBloc, CartState>(
           builder: (context, state) {
-            print(state.cartStatus);
-            print(state.items);
-
-            /* if (state.cartManageStatus is CartAddSuccess) {
-              _showSnackBar(context, "Adicionado");
-            } */
-
             if (state.cartStatus == CartStatus.empty) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +97,8 @@ class ShoppingCart extends StatelessWidget {
                                 onTap: () => {
                                   context.read<CartBloc>().add(
                                         RemoveItemFromCart(
-                                            item: state.items[index]),
+                                            item: state.items[index],
+                                            restaurant: state.restaurant),
                                       ),
                                   if (state.cartManageStatus
                                       is CartRemoveSuccess)
