@@ -24,73 +24,68 @@ class RestaurantDetails extends StatelessWidget {
             _showSnackBar(context, "Erro ao adicionar", Colors.red);
           }
         },
-        child: Container(
-          child: SingleChildScrollView(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image(
-                    image: AssetImage("images/" + this.info["img"]),
-                    fit: BoxFit.cover,
-                    height: MediaQuery.of(context).size.width / 1.67,
-                    width: MediaQuery.of(context).size.width,
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 15),
-                    padding: EdgeInsets.only(top: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          this.info["name"],
-                          style: TextStyle(
-                              fontSize: 28, fontWeight: FontWeight.w700),
-                        ),
-                        Row(
+        child: SingleChildScrollView(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image(
+                  image: AssetImage("images/" + info["img"]),
+                  fit: BoxFit.cover,
+                  height: MediaQuery.of(context).size.width / 1.67,
+                  width: MediaQuery.of(context).size.width,
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        info["name"],
+                        style: const TextStyle(
+                            fontSize: 28, fontWeight: FontWeight.w700),
+                      ),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Colors.black,
+                            size: 16,
+                          ),
+                          Text(
+                            "${info["stars"]} (200+ classificações) • Hambúrgueres",
+                            style: const TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.star_rounded,
-                              color: Colors.black,
-                              size: 16,
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 15),
+                              child: Text(
+                                "Escolhido para si",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700, fontSize: 20),
+                              ),
                             ),
-                            Text(
-                              this.info["stars"].toString() +
-                                  " (200+ classificações)" +
-                                  " • Hambúrgueres",
-                              style: TextStyle(fontWeight: FontWeight.w700),
-                            ),
+                            Column(
+                              children: [
+                                for (var info in this.info["menu"])
+                                  FoodMenuItem(
+                                      info: info, restaurant: info["name"]),
+                              ],
+                            )
                           ],
                         ),
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 15),
-                                child: Text(
-                                  "Escolhido para si",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 20),
-                                ),
-                              ),
-                              Column(
-                                children: [
-                                  for (var item in food_menu)
-                                    FoodMenuItem(
-                                        info: item, restaurant: info["name"]),
-                                ],
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                      )
+                    ],
                   ),
-                ]),
-          ),
+                ),
+              ]),
         ),
       ),
     );

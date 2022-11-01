@@ -43,6 +43,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'FoodDelivery',
+      theme: ThemeData(
+          useMaterial3: true,
+          primarySwatch: Colors.green,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                foregroundColor:
+                    MaterialStateProperty.all<Color>(Colors.white)),
+          )),
       home: RepositoryProvider(
         create: (context) => UserRepository(),
         child: MultiBlocProvider(

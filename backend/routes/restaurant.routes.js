@@ -6,11 +6,13 @@ const restaurantController = require("../controllers/restaurant.controller.js");
 const multer = require('multer');
 const upload = multer();
 
-router.get("/", auth, (req, res) => {
-	res.send("hello world");
-});
+
+// get all restaurants
+router.get("/", restaurantController.getAll);
 
 // Add a new restaurant
 router.post("/add", upload.single("photo"), restaurantController.add);
+
+
 
 module.exports = router;

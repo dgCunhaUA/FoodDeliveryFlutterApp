@@ -44,3 +44,18 @@ exports.add = async (req, res) => {
 	}
 
 }
+
+exports.getAll = async (req, res) => {
+
+    try {
+		// check if restaurant already exist
+		// Validate if restaurant exist in our database
+		const allRestaurants = await Restaurant.findAll();
+
+		// return new restaurant
+		res.status(201).json(allRestaurants);
+	} catch (err) {
+		console.log(err);
+	}
+
+}

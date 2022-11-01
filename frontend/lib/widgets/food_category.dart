@@ -34,11 +34,10 @@ class FoodCategory extends StatelessWidget {
                   bottomLeft: Radius.circular(8.0)),
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 child: Image(
-                  image: AssetImage('images/donut.png'),
-                  height: 40,
-                  width: 40,
+                  image: AssetImage('images/' + this.cover),
+                  height: 60,
                   fit: BoxFit.cover,
                 ),
               ),

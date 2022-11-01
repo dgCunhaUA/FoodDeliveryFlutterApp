@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/client/profile/client_profile_screen.dart';
 import 'package:flutter_project/screens/home_page.dart';
 import 'package:flutter_project/screens/orders.dart';
-import 'package:flutter_project/screens/search_screen.dart';
 import 'package:flutter_project/screens/wallet.dart';
 import 'package:flutter_project/client/cart/shopping_cart.dart';
 import 'package:flutter_project/session_cubit.dart';
@@ -63,7 +62,6 @@ class _TabBarMenuState extends State<TabBarMenu> {
         if (state is ClientAuthenticated) {
           widgetOptions = <Widget>[
             const HomePage(),
-            SearchScreen(),
             const ShoppingCart(),
             const ClientProfileScreen()
           ];
@@ -72,10 +70,6 @@ class _TabBarMenuState extends State<TabBarMenu> {
             const BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Página Inicial',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.manage_search),
-              label: 'Procurar',
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),
