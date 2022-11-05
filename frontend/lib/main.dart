@@ -68,7 +68,8 @@ class MyApp extends StatelessWidget {
                   AuthCubit(sessionCubit: context.read<SessionCubit>()),
             ),
             BlocProvider(
-              create: (context) => CartBloc(),
+              create: (context) =>
+                  CartBloc(userRepo: context.read<UserRepository>()),
             ),
           ],
           child: const AppNavigator(),

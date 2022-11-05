@@ -74,9 +74,11 @@ class RestaurantDetails extends StatelessWidget {
                             ),
                             Column(
                               children: [
-                                for (var info in this.info["menu"])
+                                for (var menu in info["menu"])
                                   FoodMenuItem(
-                                      info: info, restaurant: info["name"]),
+                                    info: info,
+                                    menu: menu,
+                                  ),
                               ],
                             )
                           ],

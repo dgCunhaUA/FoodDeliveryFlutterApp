@@ -17,3 +17,9 @@ class CartAddFailed extends CartManageStatus {
 class CartRemoveSuccess extends CartManageStatus {}
 
 class CartRemoveFailed extends CartManageStatus {}
+
+class CartSubmitting extends CartManageStatus {}
+
+class CartSubmitSuccess extends CartManageStatus {}
+
+class CartSubmitFailed extends CartManageStatus {}

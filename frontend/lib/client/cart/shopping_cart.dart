@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/client/cart/cart_bloc.dart';
 import 'package:flutter_project/client/cart/cart_manage_status.dart';
+import 'package:flutter_project/screens/loading.dart';
 import 'package:flutter_project/screens/orders.dart';
+import 'package:flutter_project/utils/restaurants_info.dart';
 
 class ShoppingCart extends StatelessWidget {
   const ShoppingCart({super.key});
@@ -31,36 +33,13 @@ class ShoppingCart extends StatelessWidget {
         body: BlocBuilder<CartBloc, CartState>(
           builder: (context, state) {
             if (state.cartStatus == CartStatus.empty) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 8.0),
-                    child: Image(
-                      image: AssetImage("images/cart.png"),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 8.0),
-                    child: Text(
-                      'Adicione artigos para iniciar \n um carrinho',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 16.0),
-                    child: Text(
-                      'Assim que adicionar artigos de um restaurante ou estabelecimento, o seu carrinho será apresentado aqui.',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              );
+              return _cartEmpty();
+            } else if (state.cartManageStatus is CartSubmitting) {
+              return const LoadingScreen();
             } else {
               return Container(
-                margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                margin:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -68,9 +47,6 @@ class ShoppingCart extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: state.items.length,
                       itemBuilder: (context, index) {
-                        print(state.items);
-                        print(state.items[0]);
-
                         return Container(
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Row(
@@ -97,8 +73,10 @@ class ShoppingCart extends StatelessWidget {
                                 onTap: () => {
                                   context.read<CartBloc>().add(
                                         RemoveItemFromCart(
-                                            item: state.items[index],
-                                            restaurant: state.restaurant),
+                                          item: state.items[index],
+                                          restaurant: state.restaurant,
+                                          address: state.address,
+                                        ),
                                       ),
                                   if (state.cartManageStatus
                                       is CartRemoveSuccess)
@@ -134,16 +112,31 @@ class ShoppingCart extends StatelessWidget {
                     Directionality(
                       textDirection: TextDirection.rtl,
                       child: ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: Icon(Icons.chevron_left),
-                          label: Text(
-                            "Encomendar",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize:
-                                Size(MediaQuery.of(context).size.width, 70),
-                          )),
+                        onPressed: () {
+                          context.read<CartBloc>().add(
+                                SubmitCart(),
+                              );
+                          if (state.cartManageStatus is CartSubmitSuccess) {
+                            _showSnackBar(
+                                context,
+                                "Pedido encomendado com sucesso ",
+                                Colors.green);
+                          } else if (state.cartManageStatus
+                              is CartSubmitFailed) {
+                            _showSnackBar(context, "Erro ao encomendar pedido",
+                                Colors.red);
+                          }
+                        },
+                        icon: const Icon(Icons.chevron_left),
+                        label: const Text(
+                          "Encomendar",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize:
+                              Size(MediaQuery.of(context).size.width, 70),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -152,6 +145,35 @@ class ShoppingCart extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  Widget _cartEmpty() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        Padding(
+          padding: EdgeInsets.only(bottom: 8.0),
+          child: Image(
+            image: AssetImage("images/cart.png"),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(bottom: 8.0),
+          child: Text(
+            'Adicione artigos para iniciar \n um carrinho',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(bottom: 16.0),
+          child: Text(
+            'Assim que adicionar artigos de um restaurante ou estabelecimento, o seu carrinho será apresentado aqui.',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
     );
   }
 

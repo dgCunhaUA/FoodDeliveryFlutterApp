@@ -2,6 +2,7 @@ var restaurants = [
   {
     'id': 1,
     'name': 'Guaros Burguer Bar',
+    'address': 'R. Dr. Barbosa de Magalhães 4, 3800-200 Aveiro',
     'fee': 0.4,
     'time_distance': [10, 30],
     'img': 'guaros.webp',
