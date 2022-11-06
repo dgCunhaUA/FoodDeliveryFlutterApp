@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/auth/auth_cubit.dart';
 import 'package:flutter_project/client/cart/cart_bloc.dart';
+import 'package:flutter_project/client/orders/orders_bloc.dart';
 import 'package:flutter_project/repositories/user_repository.dart';
 import 'package:flutter_project/session_cubit.dart';
 
@@ -70,6 +71,10 @@ class MyApp extends StatelessWidget {
             BlocProvider(
               create: (context) =>
                   CartBloc(userRepo: context.read<UserRepository>()),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  OrdersBloc(userRepo: context.read<UserRepository>()),
             ),
           ],
           child: const AppNavigator(),

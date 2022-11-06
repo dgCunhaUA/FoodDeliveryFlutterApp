@@ -1,3 +1,5 @@
+const { Sequelize, DataTypes } = require("sequelize");
+
 const Order = require("../models/order.model");
 
 exports.create = async (req, res) => {
@@ -46,10 +48,13 @@ exports.create = async (req, res) => {
 
 exports.accept = async (req, res) => {
 	try {
-		const { order_id, rider_name, rider_lat, rider_lng, order_status } = req.body;
+		const { order_id, rider_name, rider_lat, rider_lng, order_status } =
+			req.body;
 
 		// Validate order input
-		if (!(order_id && rider_name && rider_lat && rider_lng && order_status)) {
+		if (
+			!(order_id && rider_name && rider_lat && rider_lng && order_status)
+		) {
 			res.status(400).send("All input is required");
 		}
 
@@ -64,7 +69,7 @@ exports.accept = async (req, res) => {
 			res.status(400).send("Order doesnt exist");
 		}
 
-		if(order.order_status != "Delivering") {
+		if (order.order_status != "Delivering") {
 			// Create order in our database
 			order.rider_name = rider_name;
 			order.rider_lat = rider_lat;
@@ -80,4 +85,22 @@ exports.accept = async (req, res) => {
 	} catch (err) {
 		console.log(err);
 	}
+};
+
+exports.getClientActiveOrders = async (req, res) => {
+	const clientId = req.params.id;
+
+	if (!clientId) return res.status(400).send("Client id is required");
+
+	const orders = await Order.findAll({
+		where: Sequelize.and(
+			{ client_id: clientId },
+			Sequelize.or(
+				{ order_status: "Delivering" },
+				{ order_status: "Waiting" }
+			)
+		),
+	});
+
+	return res.status(200).json(orders);
 };

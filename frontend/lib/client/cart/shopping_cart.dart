@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/client/cart/cart_bloc.dart';
 import 'package:flutter_project/client/cart/cart_manage_status.dart';
+import 'package:flutter_project/client/orders/client_orders_view.dart';
+import 'package:flutter_project/client/orders/orders_bloc.dart';
 import 'package:flutter_project/screens/loading.dart';
 import 'package:flutter_project/screens/orders.dart';
 import 'package:flutter_project/utils/restaurants_info.dart';
@@ -19,7 +21,15 @@ class ShoppingCart extends StatelessWidget {
             CupertinoSliverNavigationBar(
               largeTitle: const Text('Carrinho'),
               trailing: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () => {
+                  context.read<OrdersBloc>().add(FectingOrders()),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ClientOrdersView(),
+                    ),
+                  ),
+                },
                 icon: const Icon(Icons.book, size: 16),
                 label: const Text("Pedidos"),
                 style: ElevatedButton.styleFrom(

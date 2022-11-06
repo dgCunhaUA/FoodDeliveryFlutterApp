@@ -38,9 +38,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
 
         if (state is RiderAuthenticated) {
           widgetOptions = <Widget>[
-            const OrderMap(
-              destinationAddress: "null",
-            ),
+            //const OrderMap(),
             const Wallet(),
             const RiderProfileScreen()
           ];

@@ -14,4 +14,10 @@ router.post("/create", orderController.create);
 // Rider accept order
 router.put("/accept", orderController.accept);
 
+// Fetch active orders for client
+router.get("/client/:id/active", orderController.getClientActiveOrders);
+
+// Fetch orders for rider
+//router.get("/rider/:id", orderController.getRiderOrders);
+
 module.exports = router;

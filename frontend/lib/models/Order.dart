@@ -1,24 +1,25 @@
 class Order {
-  int? id;
-  String? restaurantName;
-  String? restaurantAddress;
-  int? clientId;
-  String? clientName;
-  String? clientAddress;
-  String? orderStatus;
-  String? updatedAt;
-  String? createdAt;
+  late int id;
+  late String restaurantName;
+  late String restaurantAddress;
+  late int clientId;
+  late String clientName;
+  late String clientAddress;
+  late String orderStatus;
+  late String updatedAt;
+  late String createdAt;
 
-  Order(
-      {this.id,
-      this.restaurantName,
-      this.restaurantAddress,
-      this.clientId,
-      this.clientName,
-      this.clientAddress,
-      this.orderStatus,
-      this.updatedAt,
-      this.createdAt});
+  Order({
+    required this.id,
+    required this.restaurantName,
+    required this.restaurantAddress,
+    required this.clientId,
+    required this.clientName,
+    required this.clientAddress,
+    required this.orderStatus,
+    required this.updatedAt,
+    required this.createdAt,
+  });
 
   Order.fromJson(Map<String, dynamic> json) {
     id = json['id'];

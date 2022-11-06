@@ -1,4 +1,5 @@
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_project/models/Order.dart';
 import 'package:flutter_project/screens/loading.dart';
 import 'package:flutter_project/utils/api.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +21,10 @@ final item = [
 ];
 
 class OrderMap extends StatefulWidget {
-  final destinationAddress;
+  //final String destinationAddress;
+  final Order order;
 
-  const OrderMap({super.key, this.destinationAddress});
+  const OrderMap({super.key, required this.order});
 
   @override
   State<OrderMap> createState() => _OrderMapState();
@@ -46,7 +48,8 @@ class _OrderMapState extends State<OrderMap> {
 
   @override
   void initState() {
-    destAdress = widget.destinationAddress;
+    //destAdress = widget.destinationAddress;
+    destAdress = widget.order.clientAddress;
 
     _getDestCoords();
 
@@ -133,10 +136,10 @@ class _OrderMapState extends State<OrderMap> {
           decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20)),
               color: Colors.white),
-          margin: EdgeInsets.fromLTRB(15, 0, 15, 70),
+          margin: const EdgeInsets.fromLTRB(15, 0, 15, 70),
           height: 320,
           child: OrderCard(
-            item_info: item[0],
+            order: widget.order,
           ),
         );
       },
@@ -149,6 +152,7 @@ class _OrderMapState extends State<OrderMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: _currentPosition == null
           ? const LoadingScreen()
           : Stack(children: [
@@ -182,13 +186,13 @@ class _OrderMapState extends State<OrderMap> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 15),
+                    margin: const EdgeInsets.only(bottom: 15),
                     child: Center(
                       child: ElevatedButton(
                           onPressed: () {
                             showOrderModal();
                           },
-                          child: Text("Novos Pedidos (1)")),
+                          child: const Text("Novos Pedidos (1)")),
                     ),
                   ),
                 ],
