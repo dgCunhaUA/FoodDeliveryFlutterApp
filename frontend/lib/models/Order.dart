@@ -9,6 +9,10 @@ class Order {
   late String updatedAt;
   late String createdAt;
 
+  String? riderName;
+  int? riderLat;
+  int? riderLng;
+
   Order({
     required this.id,
     required this.restaurantName,
@@ -19,6 +23,9 @@ class Order {
     required this.orderStatus,
     required this.updatedAt,
     required this.createdAt,
+    this.riderName,
+    this.riderLat,
+    this.riderLng,
   });
 
   Order.fromJson(Map<String, dynamic> json) {
@@ -31,6 +38,10 @@ class Order {
     orderStatus = json['order_status'];
     updatedAt = json['updatedAt'];
     createdAt = json['createdAt'];
+
+    riderName = json['rider_name'];
+    riderLat = json['rider_lat'] != null ? int.parse(json['rider_lat']) : null;
+    riderLng = json['rider_lat'] != null ? int.parse(json['rider_lng']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +55,10 @@ class Order {
     data['order_status'] = orderStatus;
     data['updatedAt'] = updatedAt;
     data['createdAt'] = createdAt;
+
+    data['rider_name'] = riderName;
+    data['rider_lat'] = riderLat;
+    data['rider_lng'] = riderLng;
     return data;
   }
 }

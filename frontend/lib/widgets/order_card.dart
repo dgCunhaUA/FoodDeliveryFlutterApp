@@ -6,7 +6,11 @@ class OrderCard extends StatelessWidget {
   final Order order;
   bool? isValidated;
 
-  OrderCard({super.key, required this.order, this.isValidated});
+  OrderCard({
+    super.key,
+    required this.order,
+    this.isValidated,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -70,9 +74,14 @@ class OrderCard extends StatelessWidget {
                         Icons.trip_origin,
                         color: Colors.black,
                       ),
-                      Container(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: Text(order.restaurantAddress),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 4),
+                          child: Text(
+                            overflow: TextOverflow.fade,
+                            order.restaurantAddress,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -86,9 +95,14 @@ class OrderCard extends StatelessWidget {
                         Icons.location_on,
                         color: Colors.black,
                       ),
-                      Container(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: Text(order.clientAddress),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 4),
+                          child: Text(
+                            overflow: TextOverflow.fade,
+                            order.clientAddress,
+                          ),
+                        ),
                       ),
                     ],
                   ),
