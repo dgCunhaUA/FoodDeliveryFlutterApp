@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_project/models/Order.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/utils/api.dart';
 import 'package:flutter_project/widgets/order_card.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:location/location.dart';
 import 'package:geocoding/geocoding.dart' as google;
 
@@ -28,7 +30,8 @@ class _OrderMapState extends State<OrderMap> {
   Timer? timer;
   late GoogleMapController _googleMapController;
 
-  //Position? _currentPosition;
+  UserRepository userRepository = UserRepository();
+
   LocationData? _currentPosition;
   CameraPosition _initialPosition =
       const CameraPosition(target: LatLng(0, 0), zoom: 15);
@@ -104,34 +107,72 @@ class _OrderMapState extends State<OrderMap> {
     while (clientAdress == null) {
       await Future.delayed(const Duration(seconds: 1));
     }
-    print(clientAdress);
-    List<google.Location> clientLocations =
-        await google.locationFromAddress(clientAdress!);
+    google.Location clientLocation;
 
-    print(clientLocations);
+    dynamic storageItem =
+        await userRepository.map_storage.getItem("clientLocations");
 
-    google.Location clientLocation = clientLocations[0];
+    if (storageItem != null) {
+      storageItem = await jsonDecode(storageItem);
+      clientLocation = google.Location(
+        latitude: storageItem["latitude"],
+        longitude: storageItem["longitude"],
+        timestamp: DateTime(storageItem["timestamp"]),
+      );
+    } else {
+      List<google.Location> clientLocations =
+          await google.locationFromAddress(clientAdress!);
+      clientLocation = clientLocations[0];
+      userRepository.map_storage
+          .setItem("clientLocations", jsonEncode(clientLocation));
+    }
+
     _destination = LatLng(clientLocation.latitude, clientLocation.longitude);
 
     // Get polypoints for directions
     PolylinePoints polylinePoints = PolylinePoints();
-
     LatLng source =
         LatLng(_currentPosition!.latitude!, _currentPosition!.longitude!);
 
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      googleApiKey,
-      PointLatLng(source.latitude, source.longitude),
-      PointLatLng(_destination.latitude, _destination.longitude),
-      travelMode: TravelMode.driving,
-    );
+    int? polylinesLen = userRepository.map_storage.getItem("polylines_len");
 
-    if (result.points.isNotEmpty) {
-      for (var point in result.points) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-        //polyPoints.add(LatLng(point.latitude, point.longitude));
+    if (polylinesLen != null) {
+      for (var i = 0; i < polylinesLen; i++) {
+        double latitude =
+            userRepository.map_storage.getItem("polylines${i}_lat");
+
+        double longitude =
+            userRepository.map_storage.getItem("polylines${i}_lng");
+
+        polylineCoordinates.add(LatLng(latitude, longitude));
+      }
+    } else {
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        googleApiKey,
+        PointLatLng(source.latitude, source.longitude),
+        PointLatLng(_destination.latitude, _destination.longitude),
+        travelMode: TravelMode.driving,
+      );
+
+      userRepository.map_storage.setItem("polylines_len", result.points.length);
+
+      if (result.points.isNotEmpty) {
+        int i = 0;
+        print("saving");
+
+        for (var point in result.points) {
+          polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+          //polyPoints.add(LatLng(point.latitude, point.longitude));
+
+          userRepository.map_storage
+              .setItem("polylines${i}_lat", point.latitude);
+          userRepository.map_storage
+              .setItem("polylines${i}_lng", point.longitude);
+          i += 1;
+        }
       }
     }
+
     setState(() {});
   }
 

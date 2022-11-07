@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_project/models/Item.dart';
 import 'package:flutter_project/utils/api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:location_platform_interface/location_platform_interface.dart';
 
 import '../models/Order.dart';
@@ -17,6 +18,7 @@ class UserRepository {
   final Options options = Options(sendTimeout: 5000, receiveTimeout: 5000);
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
+  final LocalStorage map_storage = LocalStorage('map');
 
   Future<String?> getToken() async {
     var value = await storage.read(key: 'token');
@@ -53,6 +55,20 @@ class UserRepository {
   Future<void> _deleteStorage() async {
     //storage.delete(key: 'token');
     storage.deleteAll();
+    map_storage.clear();
+  }
+
+  Future<void> _persistCurrentOrder(Order order) async {
+    await storage.write(key: 'order', value: jsonEncode(order));
+  }
+
+  Future<Order?> _getCurrentOrder() async {
+    String? data = await storage.read(key: 'order');
+    if (data != null) {
+      return Order.fromJson(jsonDecode(data));
+    }
+
+    return null;
   }
 
   Future<Client> login(
@@ -142,8 +158,6 @@ class UserRepository {
 
         return rider;
       }
-
-      print("OALALLALALA ERRO CLIENT");
 
       throw Exception("Erro");
     } on DioError catch (e) {
@@ -312,6 +326,15 @@ class UserRepository {
   }
 
   Future<List<Order>> fetchRiderOrders() async {
+    List<Order> orders = [];
+
+    Order? storedOrder = await _getCurrentOrder();
+
+    if (storedOrder != null) {
+      orders.add(storedOrder);
+      return orders;
+    }
+
     try {
       Rider? rider = await getRider();
 
@@ -320,19 +343,16 @@ class UserRepository {
         options: options,
       );
 
-      List<Order> orders = [];
       if (response.statusCode == 200) {
         for (var data in response.data) {
           orders.add(Order.fromJson(data));
         }
 
-        print(orders);
-
         return orders;
       }
       throw Exception("Error");
     } on DioError catch (e) {
-      print(e);
+      //print(e);
       throw Exception("Error");
     }
   }
@@ -353,8 +373,12 @@ class UserRepository {
         options: options,
       );
 
-      if (response.statusCode == 200) {
-        return Order.fromJson(response.data);
+      if (response.statusCode == 201) {
+        Order order = Order.fromJson(response.data);
+
+        await _persistCurrentOrder(order);
+
+        return order;
       }
       throw Exception("Error");
     } on DioError catch (e) {
@@ -374,8 +398,6 @@ class UserRepository {
         },
         options: options,
       );
-
-      print(response.statusCode);
 
       if (response.statusCode == 200) {
         Order order = Order.fromJson(response.data);
