@@ -321,6 +321,34 @@ class UserRepository {
     }
   }
 
+  Future<Order> acceptOrder(Order order) async {
+    try {
+      Rider? rider = await getRider();
+
+      final response = await _dio.put(
+        '$urlAPI/order/accept',
+        data: {
+          "order_id": order.id,
+          "rider_name": rider!.name,
+          "rider_lat": 0,
+          "rider_lng": 0,
+          "order_status": "Delivering",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Order order = Order.fromJson(response.data);
+        print(order);
+
+        return order;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Error");
+    }
+  }
+
   Future<Order> updateRiderCoords(int id, LocationData? currentPosition) async {
     try {
       final response = await _dio.put(

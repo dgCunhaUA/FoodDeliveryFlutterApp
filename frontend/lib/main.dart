@@ -8,32 +8,6 @@ import 'package:flutter_project/rider/orders/orders_bloc.dart';
 import 'package:flutter_project/session_cubit.dart';
 
 import 'app_navigator.dart';
-import 'client/profile/client_profile_bloc.dart';
-
-/* void main() {
-  runApp(const App());
-}
-
-class App extends StatelessWidget {
-  const App({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FoodDelivery',
-      theme: ThemeData(
-          useMaterial3: true,
-          primarySwatch: Colors.green,
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                foregroundColor:
-                    MaterialStateProperty.all<Color>(Colors.white)),
-          )),
-      home: const LoginScreen(),
-    );
-  }
-} */
 
 void main() {
   runApp(const MyApp());

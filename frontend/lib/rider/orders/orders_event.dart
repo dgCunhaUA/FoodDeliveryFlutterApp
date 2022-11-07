@@ -4,3 +4,9 @@ part of 'orders_bloc.dart';
 abstract class RiderOrdersEvent {}
 
 class FectingOrders extends RiderOrdersEvent {}
+
+class AcceptOrder extends RiderOrdersEvent {
+  final Order order;
+
+  AcceptOrder(this.order);
+}

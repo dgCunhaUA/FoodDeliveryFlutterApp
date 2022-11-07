@@ -39,8 +39,11 @@ class _OrderMapState extends State<OrderMap> {
   final List<LatLng> polyPoints = []; // For holding Co-ordinates as LatLng
   final Set<Polyline> polyLines = {}; // For holding instance of Polyline
 
-  String clientAdress = "";
-  //String restaurantAdress = "";
+  String? clientAdress;
+  String? restaurantAdress;
+
+  Marker riderMarker =
+      const Marker(markerId: MarkerId("rider"), position: LatLng(0, 0));
 
   @override
   void initState() {
@@ -52,11 +55,14 @@ class _OrderMapState extends State<OrderMap> {
           const Duration(seconds: 5), (Timer t) => _getRiderCoords());
     }
 
-    clientAdress =
-        "R. Dr. Barbosa de Magalhães 4, 3800-200 Aveiro"; //widget.order.clientAddress;
-    //restaurantAdress = widget.order.restaurantAddress;
+    setState(() {
+      restaurantAdress =
+          "R. Dr. Barbosa de Magalhães 4, 3800-200 Aveiro"; //widget.order.restaurantAddress;
+      clientAdress =
+          "Universidade de Aveiro, 3810-193 Aveiro"; //widget.order.clientAddress;
+    });
 
-    _getDestCoords();
+    _getLocationAndDirections();
 
     super.initState();
   }
@@ -66,7 +72,6 @@ class _OrderMapState extends State<OrderMap> {
 
     if (_currentPosition != null) {
       userRepo.updateRiderCoords(widget.order.id, _currentPosition);
-      print(_currentPosition.toString());
     }
   }
 
@@ -74,64 +79,41 @@ class _OrderMapState extends State<OrderMap> {
     UserRepository userRepo = UserRepository();
     Order order = await userRepo.getRiderCoords(widget.order.id);
 
-    print(order.riderLat);
-    print(order.riderLng);
+    LatLng riderLatLng = LatLng(order.riderLat!, order.riderLng!);
+
+    setState(() {
+      riderMarker =
+          Marker(markerId: const MarkerId("rider"), position: riderLatLng);
+    });
   }
 
-  void _getDestCoords() async {
-    DirectionsHelper dirHelper =
-        DirectionsHelper(startLat: 0, startLng: 0, endLat: 0, endLng: 0);
+  void _getLocationAndDirections() async {
+    // Get current location
+    Location locationController = Location();
+    LocationData location = await locationController.getLocation();
 
-    _destination = await dirHelper.getCoords(clientAdress);
-    setState(() {});
-
-    _getCurrentLocation();
-  }
-
-  void _getCurrentLocation() {
-    Location location = Location();
-
-    location.getLocation().then((location) => {
-          setState(() => {
-                _currentPosition = location,
-                _initialPosition = CameraPosition(
-                    target: LatLng(_currentPosition!.latitude!,
-                        _currentPosition!.longitude!),
-                    zoom: 15)
-              }),
-          _getClientLocation(),
+    setState(() => {
+          _currentPosition = location,
+          _initialPosition = CameraPosition(
+              target: LatLng(
+                  _currentPosition!.latitude!, _currentPosition!.longitude!),
+              zoom: 15)
         });
-  }
 
-  _getClientLocation() async {
+    // Get Client address location
+    while (clientAdress == null) {
+      await Future.delayed(const Duration(seconds: 1));
+    }
+    print(clientAdress);
     List<google.Location> clientLocations =
-        await google.locationFromAddress(clientAdress);
+        await google.locationFromAddress(clientAdress!);
+
+    print(clientLocations);
 
     google.Location clientLocation = clientLocations[0];
     _destination = LatLng(clientLocation.latitude, clientLocation.longitude);
 
-    //getJsonData();
-    getPolyPoints();
-  }
-
-  /* void getJsonData() async {
-    DirectionsHelper dirHelper = DirectionsHelper(
-        startLat: _currentPosition!.latitude!,
-        startLng: _currentPosition!.longitude!,
-        endLat: _destination.latitude,
-        endLng: _destination.longitude);
-
-    try {
-      Polyline polyline = await dirHelper.getPolyline();
-      setState(() {
-        polyLines.add(polyline);
-      });
-    } catch (e) {
-      print(e);
-    }
-  } */
-
-  void getPolyPoints() async {
+    // Get polypoints for directions
     PolylinePoints polylinePoints = PolylinePoints();
 
     LatLng source =
@@ -180,7 +162,6 @@ class _OrderMapState extends State<OrderMap> {
       },
     ).then((value) {
       clientAdress = value;
-      _getDestCoords();
     });
   }
 
@@ -277,14 +258,16 @@ class _OrderMapState extends State<OrderMap> {
                         initialCameraPosition: _initialPosition,
                         onMapCreated: (controller) =>
                             {_googleMapController = controller},
-                        markers: {
-                          Marker(
-                            markerId: const MarkerId("dest"),
-                            position: _destination,
+                        markers: {riderMarker},
+                        myLocationEnabled: true,
+                        polylines: {
+                          Polyline(
+                            polylineId: const PolylineId("line"),
+                            points: polylineCoordinates,
+                            color: Colors.green,
+                            width: 3,
                           )
                         },
-                        myLocationEnabled: true,
-                        polylines: polyLines,
                       )
                     : GoogleMap(
                         myLocationButtonEnabled: true,
