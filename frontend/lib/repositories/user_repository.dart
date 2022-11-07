@@ -332,6 +332,8 @@ class UserRepository {
         },
       );
 
+      print(response.statusCode);
+
       if (response.statusCode == 200) {
         Order order = Order.fromJson(response.data);
 
@@ -346,9 +348,8 @@ class UserRepository {
 
   Future<Order> getRiderCoords(int id) async {
     try {
-      final response = await _dio.put(
-        '$urlAPI/order/rider/update',
-        data: {'order_id': id},
+      final response = await _dio.get(
+        '$urlAPI/order/$id/coords',
       );
 
       if (response.statusCode == 200) {

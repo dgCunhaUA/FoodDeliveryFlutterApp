@@ -40,8 +40,13 @@ class Order {
     createdAt = json['createdAt'];
 
     riderName = json['rider_name'];
-    riderLat = json['rider_lat'];
-    riderLng = json['rider_lat'];
+    if (json["rider_lat"] is String) {
+      riderLat = double.parse(json['rider_lat']);
+      riderLng = double.parse(json['rider_lng']);
+    } else {
+      riderLat = json['rider_lat'];
+      riderLng = json['rider_lng'];
+    }
   }
 
   Map<String, dynamic> toJson() {
