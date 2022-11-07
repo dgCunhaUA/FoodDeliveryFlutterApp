@@ -91,7 +91,7 @@ var restaurants = [
       },
       {
         'name': 'Menu Steakhouse',
-        'desc': 'Lorem ipsum dolor sit amet.',
+        'desc': 'Os melhores ingredientes...',
         'price': 8,
         'img': 'item4.webp',
       },

@@ -1,4 +1,4 @@
-var urlAPI = 'http://192.168.1.114:3000/api';
+var urlAPI = 'http://192.168.1.67:3000/api';
 //var urlAPI = 'https://cm-project-nodejs-mysql.herokuapp.com/api';
 
 const googleApikey = "AIzaSyAYtUO550ApczIlwBWu2RkeccU6NiLQVFs";
