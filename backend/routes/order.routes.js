@@ -18,6 +18,6 @@ router.put("/accept", orderController.accept);
 router.get("/client/:id/active", orderController.getClientActiveOrders);
 
 // Fetch orders for rider
-//router.get("/rider/:id", orderController.getRiderOrders);
+router.get("/rider/:id", orderController.getRiderOrders);
 
 module.exports = router;

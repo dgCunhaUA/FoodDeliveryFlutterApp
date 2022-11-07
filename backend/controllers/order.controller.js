@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
 const Order = require("../models/order.model");
+const Rider = require("../models/rider.model");
 
 exports.create = async (req, res) => {
 	try {
@@ -101,6 +102,38 @@ exports.getClientActiveOrders = async (req, res) => {
 			)
 		),
 	});
+
+	return res.status(200).json(orders);
+};
+
+exports.getRiderOrders = async (req, res) => {
+	const riderId = req.params.id;
+
+	if (!riderId) return res.status(400).send("Rider id is required");
+
+	let rider = await Rider.findOne({
+		where: {id: riderId}
+	})
+
+	if(!rider) return res.status(400).send("Rider id is invalid");
+
+	let orders = await Order.findAll({
+		where: {
+			rider_name: rider.name,
+			order_status: "Delivering",
+		},
+	});
+
+	if (orders.length == 0)
+		orders = await Order.findAll({
+			where: Sequelize.and(
+				{ rider_name: null },
+				Sequelize.or(
+					{ order_status: "Delivering" },
+					{ order_status: "Waiting" }
+				)
+			),
+		});
 
 	return res.status(200).json(orders);
 };

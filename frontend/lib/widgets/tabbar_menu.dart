@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_project/client/profile/client_profile_screen.dart';
+import 'package:flutter_project/rider/orders/rider_orders_view.dart';
 import 'package:flutter_project/screens/home_page.dart';
+import 'package:flutter_project/screens/loading.dart';
 import 'package:flutter_project/screens/order_map.dart';
 import 'package:flutter_project/screens/wallet.dart';
 import 'package:flutter_project/client/cart/shopping_cart.dart';
@@ -38,7 +40,7 @@ class _TabBarMenuState extends State<TabBarMenu> {
 
         if (state is RiderAuthenticated) {
           widgetOptions = <Widget>[
-            //const OrderMap(),
+            const RiderOrdersView(),
             const Wallet(),
             const RiderProfileScreen()
           ];

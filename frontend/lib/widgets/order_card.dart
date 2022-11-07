@@ -50,7 +50,7 @@ class OrderCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: const [
                   Text(
-                    "-----€",
+                    "3€",
                     style: TextStyle(
                       fontSize: 42,
                       height: 1.2,

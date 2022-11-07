@@ -282,6 +282,29 @@ class UserRepository {
           orders.add(Order.fromJson(data));
         }
 
+        return orders;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Error");
+    }
+  }
+
+  Future<List<Order>> fetchRiderOrders() async {
+    try {
+      Rider? rider = await getRider();
+
+      final response = await _dio.get(
+        '$urlAPI/order/rider/${rider!.id}',
+      );
+
+      List<Order> orders = [];
+      if (response.statusCode == 200) {
+        for (var data in response.data) {
+          orders.add(Order.fromJson(data));
+        }
+
         print(orders);
 
         return orders;
