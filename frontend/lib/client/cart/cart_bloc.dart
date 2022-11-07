@@ -55,6 +55,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
       emit(state.reset());
     } on Exception catch (e) {
+      print(".a.a.a.a.a");
       emit(state.setCartManageStatus(cartManageStatus: CartSubmitFailed()));
     }
   }

@@ -10,8 +10,8 @@ class Order {
   late String createdAt;
 
   String? riderName;
-  int? riderLat;
-  int? riderLng;
+  double? riderLat;
+  double? riderLng;
 
   Order({
     required this.id,
@@ -40,8 +40,16 @@ class Order {
     createdAt = json['createdAt'];
 
     riderName = json['rider_name'];
-    riderLat = json['rider_lat'] != null ? int.parse(json['rider_lat']) : null;
-    riderLng = json['rider_lat'] != null ? int.parse(json['rider_lng']) : null;
+    if (json["rider_lat"] is String) {
+      riderLat = double.parse(json['rider_lat']);
+      riderLng = double.parse(json['rider_lng']);
+    } else if (json["rider_lat"] is int) {
+      riderLat = json['rider_lat'].toDouble();
+      riderLng = json['rider_lng'].toDouble();
+    } else {
+      riderLat = json['rider_lat'];
+      riderLng = json['rider_lng'];
+    }
   }
 
   Map<String, dynamic> toJson() {

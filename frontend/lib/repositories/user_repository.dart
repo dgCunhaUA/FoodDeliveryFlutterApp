@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_project/models/Item.dart';
 import 'package:flutter_project/utils/api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:location_platform_interface/location_platform_interface.dart';
 
 import '../models/Order.dart';
 import '../models/Rider.dart';
@@ -12,7 +14,11 @@ import '../models/Client.dart';
 
 class UserRepository {
   final Dio _dio = Dio();
+
+  final Options options = Options(sendTimeout: 5000, receiveTimeout: 5000);
+
   final FlutterSecureStorage storage = const FlutterSecureStorage();
+  final LocalStorage map_storage = LocalStorage('map');
 
   Future<String?> getToken() async {
     var value = await storage.read(key: 'token');
@@ -49,6 +55,20 @@ class UserRepository {
   Future<void> _deleteStorage() async {
     //storage.delete(key: 'token');
     storage.deleteAll();
+    map_storage.clear();
+  }
+
+  Future<void> _persistCurrentOrder(Order order) async {
+    await storage.write(key: 'order', value: jsonEncode(order));
+  }
+
+  Future<Order?> _getCurrentOrder() async {
+    String? data = await storage.read(key: 'order');
+    if (data != null) {
+      return Order.fromJson(jsonDecode(data));
+    }
+
+    return null;
   }
 
   Future<Client> login(
@@ -57,6 +77,7 @@ class UserRepository {
       final response = await _dio.post(
         '$urlAPI/client/login',
         data: {'email': email, 'password': password},
+        options: options,
       );
 
       if (response.statusCode == 200) {
@@ -68,6 +89,7 @@ class UserRepository {
       }
       throw Exception("Login Error");
     } on DioError catch (e) {
+      print(e);
       if (e.response!.statusCode == 400) {
         throw Exception("Password Incorreta");
       }
@@ -90,6 +112,7 @@ class UserRepository {
           'password': password,
           'address': address,
         },
+        options: options,
       );
 
       if (response.statusCode == 201) {
@@ -125,6 +148,7 @@ class UserRepository {
           'address': address,
           'vehicle': vehicle,
         },
+        options: options,
       );
 
       if (response.statusCode == 201) {
@@ -134,6 +158,7 @@ class UserRepository {
 
         return rider;
       }
+
       throw Exception("Erro");
     } on DioError catch (e) {
       if (e.response!.statusCode == 409) {
@@ -150,6 +175,7 @@ class UserRepository {
       final response = await _dio.post(
         '$urlAPI/rider/login',
         data: {'email': email, 'password': password},
+        options: options,
       );
 
       if (response.statusCode == 200) {
@@ -186,8 +212,11 @@ class UserRepository {
         "filename": fileName
       });
 
-      Response response =
-          await _dio.post('$urlAPI/client/upload', data: formData);
+      Response response = await _dio.post(
+        '$urlAPI/client/upload',
+        data: formData,
+        options: options,
+      );
 
       if (response.statusCode == 200) {
         Client updatedClient = Client.fromJson(response.data);
@@ -217,8 +246,11 @@ class UserRepository {
         "filename": fileName
       });
 
-      Response response =
-          await _dio.post('$urlAPI/rider/upload', data: formData);
+      Response response = await _dio.post(
+        '$urlAPI/rider/upload',
+        data: formData,
+        options: options,
+      );
 
       print(response.data);
 
@@ -255,6 +287,7 @@ class UserRepository {
           "client_name": client.name,
           "client_address": client.address
         },
+        options: options,
       );
 
       if (response.statusCode == 201) {
@@ -274,6 +307,7 @@ class UserRepository {
 
       final response = await _dio.get(
         '$urlAPI/order/client/${client!.id}/active',
+        options: options,
       );
 
       List<Order> orders = [];
@@ -292,22 +326,102 @@ class UserRepository {
   }
 
   Future<List<Order>> fetchRiderOrders() async {
+    List<Order> orders = [];
+
+    Order? storedOrder = await _getCurrentOrder();
+
+    if (storedOrder != null) {
+      orders.add(storedOrder);
+      return orders;
+    }
+
     try {
       Rider? rider = await getRider();
 
       final response = await _dio.get(
         '$urlAPI/order/rider/${rider!.id}',
+        options: options,
       );
 
-      List<Order> orders = [];
       if (response.statusCode == 200) {
         for (var data in response.data) {
           orders.add(Order.fromJson(data));
         }
 
-        print(orders);
-
         return orders;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      //print(e);
+      throw Exception("Error");
+    }
+  }
+
+  Future<Order> acceptOrder(Order order) async {
+    try {
+      Rider? rider = await getRider();
+
+      final response = await _dio.put(
+        '$urlAPI/order/accept',
+        data: {
+          "order_id": order.id,
+          "rider_name": rider!.name,
+          "rider_lat": 0.1,
+          "rider_lng": 0.1,
+          "order_status": "Delivering",
+        },
+        options: options,
+      );
+
+      if (response.statusCode == 201) {
+        Order order = Order.fromJson(response.data);
+
+        await _persistCurrentOrder(order);
+
+        return order;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Error");
+    }
+  }
+
+  Future<Order> updateRiderCoords(int id, LocationData? currentPosition) async {
+    try {
+      final response = await _dio.put(
+        '$urlAPI/order/rider/update',
+        data: {
+          'order_id': id,
+          'rider_lat': currentPosition!.latitude,
+          "rider_lng": currentPosition.longitude
+        },
+        options: options,
+      );
+
+      if (response.statusCode == 200) {
+        Order order = Order.fromJson(response.data);
+
+        return order;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Error");
+    }
+  }
+
+  Future<Order> getRiderCoords(int id) async {
+    try {
+      final response = await _dio.get(
+        '$urlAPI/order/$id/coords',
+        options: options,
+      );
+
+      if (response.statusCode == 200) {
+        Order order = Order.fromJson(response.data);
+
+        return order;
       }
       throw Exception("Error");
     } on DioError catch (e) {

@@ -12,7 +12,7 @@ import '../../models/Client.dart';
 
 class ClientProfileBloc extends Bloc<ClientProfileEvent, ClientProfileState> {
   final UserRepository userRepo;
-  late File photo;
+  File? photo;
 
   ClientProfileBloc({required Client client, required this.userRepo})
       : super(ClientProfileState(client: client)) {
@@ -46,8 +46,6 @@ class ClientProfileBloc extends Bloc<ClientProfileEvent, ClientProfileState> {
         await imagePicker.pickImage(source: ImageSource.camera);
     photo = File(image!.path);
 
-    print(photo.path);
-
     emit(state.copyWith(
         client: state.client,
         image: photo,
@@ -58,16 +56,23 @@ class ClientProfileBloc extends Bloc<ClientProfileEvent, ClientProfileState> {
       SaveProfileRequest event, Emitter<ClientProfileState> emit) async {
     try {
       emit(state.copyWith(profileEditingStatus: ProfileEditingSubmitting()));
-      File newphoto = await userRepo.uploadClientPhoto(photo);
 
-      print("emit success");
+      if (photo != null) {
+        File newphoto = await userRepo.uploadClientPhoto(photo!);
 
-      Client? updatedClient = await userRepo.getClient();
+        Client? updatedClient = await userRepo.getClient();
 
-      emit(state.copyWith(
-          client: updatedClient,
-          image: newphoto,
-          profileEditingStatus: ProfileEditingSubmissionSuccess()));
+        emit(state.copyWith(
+            client: updatedClient,
+            image: newphoto,
+            profileEditingStatus: ProfileEditingSubmissionSuccess()));
+      } else {
+        emit(
+          state.copyWith(
+            profileEditingStatus: ProfileEditingSubmissionSuccess(),
+          ),
+        );
+      }
     } on Exception catch (e) {
       print(e);
       emit(state.copyWith(profileEditingStatus: SubmissionFailed(e)));
