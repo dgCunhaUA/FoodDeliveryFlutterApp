@@ -56,7 +56,7 @@ exports.accept = async (req, res) => {
 		if (
 			!(order_id && rider_name && rider_lat && rider_lng && order_status)
 		) {
-			res.status(400).send("All input is required");
+			return res.status(400).send("All input is required");
 		}
 
 		// Validate if order exist in our database
@@ -67,7 +67,7 @@ exports.accept = async (req, res) => {
 		});
 
 		if (order == null) {
-			res.status(400).send("Order doesnt exist");
+			return res.status(400).send("Order doesnt exist");
 		}
 
 		if (order.order_status != "Delivering") {
@@ -79,9 +79,9 @@ exports.accept = async (req, res) => {
 			const updatedOrder = await order.save();
 
 			// return new order
-			res.status(201).json(updatedOrder);
+			return res.status(201).json(updatedOrder);
 		} else {
-			res.status(400).send("Order already being delivered");
+			return res.status(400).send("Order already being delivered");
 		}
 	} catch (err) {
 		console.log(err);

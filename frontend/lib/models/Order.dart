@@ -43,6 +43,9 @@ class Order {
     if (json["rider_lat"] is String) {
       riderLat = double.parse(json['rider_lat']);
       riderLng = double.parse(json['rider_lng']);
+    } else if (json["rider_lat"] is int) {
+      riderLat = json['rider_lat'].toDouble();
+      riderLng = json['rider_lng'].toDouble();
     } else {
       riderLat = json['rider_lat'];
       riderLng = json['rider_lng'];

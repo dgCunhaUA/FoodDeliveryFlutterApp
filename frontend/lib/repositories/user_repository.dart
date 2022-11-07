@@ -13,6 +13,9 @@ import '../models/Client.dart';
 
 class UserRepository {
   final Dio _dio = Dio();
+
+  final Options options = Options(sendTimeout: 5000, receiveTimeout: 5000);
+
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   Future<String?> getToken() async {
@@ -58,6 +61,7 @@ class UserRepository {
       final response = await _dio.post(
         '$urlAPI/client/login',
         data: {'email': email, 'password': password},
+        options: options,
       );
 
       if (response.statusCode == 200) {
@@ -92,6 +96,7 @@ class UserRepository {
           'password': password,
           'address': address,
         },
+        options: options,
       );
 
       if (response.statusCode == 201) {
@@ -127,6 +132,7 @@ class UserRepository {
           'address': address,
           'vehicle': vehicle,
         },
+        options: options,
       );
 
       if (response.statusCode == 201) {
@@ -155,6 +161,7 @@ class UserRepository {
       final response = await _dio.post(
         '$urlAPI/rider/login',
         data: {'email': email, 'password': password},
+        options: options,
       );
 
       if (response.statusCode == 200) {
@@ -191,8 +198,11 @@ class UserRepository {
         "filename": fileName
       });
 
-      Response response =
-          await _dio.post('$urlAPI/client/upload', data: formData);
+      Response response = await _dio.post(
+        '$urlAPI/client/upload',
+        data: formData,
+        options: options,
+      );
 
       if (response.statusCode == 200) {
         Client updatedClient = Client.fromJson(response.data);
@@ -222,8 +232,11 @@ class UserRepository {
         "filename": fileName
       });
 
-      Response response =
-          await _dio.post('$urlAPI/rider/upload', data: formData);
+      Response response = await _dio.post(
+        '$urlAPI/rider/upload',
+        data: formData,
+        options: options,
+      );
 
       print(response.data);
 
@@ -260,6 +273,7 @@ class UserRepository {
           "client_name": client.name,
           "client_address": client.address
         },
+        options: options,
       );
 
       if (response.statusCode == 201) {
@@ -279,6 +293,7 @@ class UserRepository {
 
       final response = await _dio.get(
         '$urlAPI/order/client/${client!.id}/active',
+        options: options,
       );
 
       List<Order> orders = [];
@@ -302,6 +317,7 @@ class UserRepository {
 
       final response = await _dio.get(
         '$urlAPI/order/rider/${rider!.id}',
+        options: options,
       );
 
       List<Order> orders = [];
@@ -330,17 +346,15 @@ class UserRepository {
         data: {
           "order_id": order.id,
           "rider_name": rider!.name,
-          "rider_lat": 0,
-          "rider_lng": 0,
+          "rider_lat": 0.1,
+          "rider_lng": 0.1,
           "order_status": "Delivering",
         },
+        options: options,
       );
 
       if (response.statusCode == 200) {
-        Order order = Order.fromJson(response.data);
-        print(order);
-
-        return order;
+        return Order.fromJson(response.data);
       }
       throw Exception("Error");
     } on DioError catch (e) {
@@ -358,6 +372,7 @@ class UserRepository {
           'rider_lat': currentPosition!.latitude,
           "rider_lng": currentPosition.longitude
         },
+        options: options,
       );
 
       print(response.statusCode);
@@ -378,6 +393,7 @@ class UserRepository {
     try {
       final response = await _dio.get(
         '$urlAPI/order/$id/coords',
+        options: options,
       );
 
       if (response.statusCode == 200) {
