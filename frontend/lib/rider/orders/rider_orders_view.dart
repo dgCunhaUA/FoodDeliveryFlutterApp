@@ -41,7 +41,10 @@ class RiderOrdersView extends StatelessWidget {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => OrderMap(order: order),
+                  builder: (context) => OrderMap(
+                    order: order,
+                    isRider: false,
+                  ),
                 ),
               ),
               child: ListTile(title: _buildOrderCard(order)),

@@ -5,10 +5,12 @@ import 'package:flutter_project/screens/validate_order.dart';
 class OrderCard extends StatelessWidget {
   final Order order;
   bool? isValidated;
+  final bool isRider;
 
   OrderCard({
     super.key,
     required this.order,
+    required this.isRider,
     this.isValidated,
   });
 
@@ -18,48 +20,64 @@ class OrderCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
         child: Column(
           children: [
-            ElevatedButton.icon(
-              onPressed: () => {
-                if (isValidated != null)
-                  {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const ValidateOrder(),
-                      ),
-                    )
-                  }
-                else
-                  {
-                    Navigator.pop(context, order.restaurantAddress) // TODO:
-                  }
-              },
-              icon: isValidated != null
-                  ? const Icon(Icons.qr_code)
-                  : const Icon(Icons.delivery_dining),
-              label: isValidated != null
-                  ? const Text("Confimar Entrega")
-                  : const Text("Iniciar Entrega"),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 84, 204, 124),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.all(20.0)),
-            ),
+            if (isRider) ...[
+              ElevatedButton.icon(
+                onPressed: () => {
+                  if (isValidated != null)
+                    {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ValidateOrder(),
+                        ),
+                      )
+                    }
+                  else
+                    {
+                      Navigator.pop(context, order.restaurantAddress) // TODO:
+                    }
+                },
+                icon: isValidated != null
+                    ? const Icon(Icons.qr_code)
+                    : const Icon(Icons.delivery_dining),
+                label: isValidated != null
+                    ? const Text("Confimar Entrega")
+                    : const Text("Iniciar Entrega"),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 84, 204, 124),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.all(20.0)),
+              ),
+            ],
             Container(
               margin: const EdgeInsets.symmetric(vertical: 18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  Text(
-                    "3€",
-                    style: TextStyle(
-                      fontSize: 42,
-                      height: 1.2,
+                children: [
+                  if (isRider) ...[
+                    const Text(
+                      "3€",
+                      style: TextStyle(
+                        fontSize: 42,
+                        height: 1.2,
+                      ),
                     ),
-                  ),
-                  Text(
-                    "inclui gorjetas expectáveis",
-                    style: TextStyle(fontSize: 12),
-                  ),
+                    const Text(
+                      "inclui gorjetas expectáveis",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ] else ...[
+                    Text(
+                      order.orderStatus,
+                      style: const TextStyle(
+                        fontSize: 42,
+                        height: 1.2,
+                      ),
+                    ),
+                    Text(
+                      order.riderName ?? "",
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ],
                 ],
               ),
             ),

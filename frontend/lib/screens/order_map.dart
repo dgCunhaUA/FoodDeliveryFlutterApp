@@ -1,7 +1,6 @@
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_project/models/Order.dart';
 import 'package:flutter_project/screens/loading.dart';
-import 'package:flutter_project/utils/api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/widgets/order_card.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,22 +8,12 @@ import 'package:location/location.dart';
 
 import '../utils/directions_helper.dart';
 
-final item = [
-  {
-    'id': 'jpxcQ00rLy',
-    "price": 27.82,
-    "time": 26,
-    "distance": 4.7,
-    "restaurant": "La Grotta",
-    "destination": "Universidade de Aveiro, 3810-193 Aveiro"
-  }
-];
-
 class OrderMap extends StatefulWidget {
   //final String destinationAddress;
   final Order order;
+  final bool isRider;
 
-  const OrderMap({super.key, required this.order});
+  const OrderMap({super.key, required this.order, required this.isRider});
 
   @override
   State<OrderMap> createState() => _OrderMapState();
@@ -43,7 +32,6 @@ class _OrderMapState extends State<OrderMap> {
   List<LatLng> polylineCoordinates = [];
   final List<LatLng> polyPoints = []; // For holding Co-ordinates as LatLng
   final Set<Polyline> polyLines = {}; // For holding instance of Polyline
-  var data;
   String destAdress = "null";
 
   @override
@@ -140,6 +128,7 @@ class _OrderMapState extends State<OrderMap> {
           height: 320,
           child: OrderCard(
             order: widget.order,
+            isRider: widget.isRider, // TODO:
           ),
         );
       },
