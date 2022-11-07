@@ -29,7 +29,7 @@ class LoginScreen extends StatelessWidget {
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) {
             var formStatus = state.formStatus;
-            print(formStatus);
+            print("FORM STATUS: !$formStatus");
             if (formStatus is SubmissionFailed) {
               _showSnackBar(context, formStatus.exception.toString());
             }

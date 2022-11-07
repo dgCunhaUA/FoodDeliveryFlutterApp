@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_project/models/Order.dart';
+import 'package:flutter_project/repositories/user_repository.dart';
 import 'package:flutter_project/screens/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/widgets/order_card.dart';
@@ -34,14 +37,37 @@ class _OrderMapState extends State<OrderMap> {
   final Set<Polyline> polyLines = {}; // For holding instance of Polyline
   String destAdress = "null";
 
+  Timer? timer;
+
   @override
   void initState() {
+    if (widget.isRider) {
+      timer = Timer.periodic(
+          const Duration(seconds: 5), (Timer t) => _updateRiderCoords());
+    } else {
+      timer = Timer.periodic(
+          const Duration(seconds: 5), (Timer t) => _getRiderCoords());
+    }
+
     //destAdress = widget.destinationAddress;
     destAdress = widget.order.clientAddress;
 
     _getDestCoords();
 
     super.initState();
+  }
+
+  void _updateRiderCoords() async {
+    UserRepository userRepo = UserRepository();
+
+    if (_currentPosition != null) {
+      userRepo.updateRiderCoords(widget.order.id, _currentPosition);
+    }
+  }
+
+  void _getRiderCoords() async {
+    UserRepository userRepo = UserRepository();
+    userRepo.getRiderCoords(widget.order.id);
   }
 
   void _getDestCoords() async {
@@ -111,6 +137,7 @@ class _OrderMapState extends State<OrderMap> {
   @override
   void dispose() {
     _googleMapController.dispose();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -128,7 +155,7 @@ class _OrderMapState extends State<OrderMap> {
           height: 320,
           child: OrderCard(
             order: widget.order,
-            isRider: widget.isRider, // TODO:
+            isRider: widget.isRider,
           ),
         );
       },

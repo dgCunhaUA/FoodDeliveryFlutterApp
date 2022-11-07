@@ -112,10 +112,10 @@ exports.getRiderOrders = async (req, res) => {
 	if (!riderId) return res.status(400).send("Rider id is required");
 
 	let rider = await Rider.findOne({
-		where: {id: riderId}
-	})
+		where: { id: riderId },
+	});
 
-	if(!rider) return res.status(400).send("Rider id is invalid");
+	if (!rider) return res.status(400).send("Rider id is invalid");
 
 	let orders = await Order.findAll({
 		where: {
@@ -138,10 +138,8 @@ exports.getRiderOrders = async (req, res) => {
 	return res.status(200).json(orders);
 };
 
-
 exports.deliverOrder = async (req, res) => {
-
-	const orderId = req.params.id
+	const orderId = req.params.id;
 
 	if (!orderId) return res.status(400).send("Order id is required");
 
@@ -153,8 +151,44 @@ exports.deliverOrder = async (req, res) => {
 
 	if (!order) return res.status(404).send("Order not found");
 
-	order.order_status = "Delivered"
-	const newOrder = await order.save()
+	order.order_status = "Delivered";
+	const newOrder = await order.save();
 
 	return res.status(200).json(newOrder);
-}
+};
+
+exports.updateRiderCoords = async (req, res) => {
+	const { order_id, rider_lat, rider_lng } = req.body;
+
+	if (!(order_id && rider_lat && rider_lng)) {
+		res.status(400).send("All input is required");
+	}
+
+	const order = await Order.findOne({
+		where: {
+			id: order_id,
+		},
+	});
+
+	order.rider_lat = rider_lat;
+	order.rider_lng = rider_lng;
+	const updatedOrder = await order.save();
+
+	return res.status(200).json(updatedOrder);
+};
+
+exports.getRiderCoords = async (req, res) => {
+	const order_id = req.params.id;
+
+	if (!(order_id)) {
+		res.status(400).send("Order id is required");
+	}
+
+	const order = await Order.findOne({
+		where: {
+			id: order_id,
+		},
+	});
+
+	return res.status(200).json(order);
+};

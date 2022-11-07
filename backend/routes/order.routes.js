@@ -23,4 +23,10 @@ router.get("/rider/:id", orderController.getRiderOrders);
 // Confirm order delivery
 router.get("/delivery/:id", orderController.deliverOrder)
 
+// Update rider coords
+router.put("/rider/update", orderController.updateRiderCoords)
+
+// Get rider coords
+router.get("/:id/coords", orderController.getRiderCoords)
+
 module.exports = router;

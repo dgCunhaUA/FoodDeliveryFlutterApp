@@ -18,6 +18,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       : super(LoginState()) {
     on<LoginEvent>(
       (event, emit) async {
+        print("EVENT: $event");
         if (event is LoginEmailChanged) {
           _handleLoginEmailChanged(event, emit);
         } else if (event is LoginPasswordChanged) {
@@ -49,6 +50,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         email: state.email,
         password: state.password,
       );
+
       emit(state.copyWith(formStatus: SubmissionSuccess()));
 
       authCubit.launchSession(AuthCredentials(

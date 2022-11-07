@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_project/models/Item.dart';
 import 'package:flutter_project/utils/api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:location_platform_interface/location_platform_interface.dart';
 
 import '../models/Order.dart';
 import '../models/Rider.dart';
@@ -68,6 +69,7 @@ class UserRepository {
       }
       throw Exception("Login Error");
     } on DioError catch (e) {
+      print(e);
       if (e.response!.statusCode == 400) {
         throw Exception("Password Incorreta");
       }
@@ -134,6 +136,9 @@ class UserRepository {
 
         return rider;
       }
+
+      print("OALALLALALA ERRO CLIENT");
+
       throw Exception("Erro");
     } on DioError catch (e) {
       if (e.response!.statusCode == 409) {
@@ -308,6 +313,48 @@ class UserRepository {
         print(orders);
 
         return orders;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Error");
+    }
+  }
+
+  Future<Order> updateRiderCoords(int id, LocationData? currentPosition) async {
+    try {
+      final response = await _dio.put(
+        '$urlAPI/order/rider/update',
+        data: {
+          'order_id': id,
+          'rider_lat': currentPosition!.latitude,
+          "rider_lng": currentPosition.longitude
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Order order = Order.fromJson(response.data);
+
+        return order;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Error");
+    }
+  }
+
+  Future<Order> getRiderCoords(int id) async {
+    try {
+      final response = await _dio.put(
+        '$urlAPI/order/rider/update',
+        data: {'order_id': id},
+      );
+
+      if (response.statusCode == 200) {
+        Order order = Order.fromJson(response.data);
+
+        return order;
       }
       throw Exception("Error");
     } on DioError catch (e) {
