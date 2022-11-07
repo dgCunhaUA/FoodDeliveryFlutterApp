@@ -68,9 +68,6 @@ class ShoppingCart extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: state.items.length,
                       itemBuilder: (context, index) {
-                        print(state.items);
-                        print(state.items[0]);
-
                         return Container(
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Row(
@@ -134,7 +131,10 @@ class ShoppingCart extends StatelessWidget {
                     Directionality(
                       textDirection: TextDirection.rtl,
                       child: ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            print(state.items);
+                            print(state.restaurant);
+                          },
                           icon: Icon(Icons.chevron_left),
                           label: Text(
                             "Encomendar",
