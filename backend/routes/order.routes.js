@@ -20,4 +20,7 @@ router.get("/client/:id/active", orderController.getClientActiveOrders);
 // Fetch orders for rider
 router.get("/rider/:id", orderController.getRiderOrders);
 
+// Confirm order delivery
+router.get("/delivery/:id", orderController.deliverOrder)
+
 module.exports = router;

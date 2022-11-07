@@ -137,3 +137,24 @@ exports.getRiderOrders = async (req, res) => {
 
 	return res.status(200).json(orders);
 };
+
+
+exports.deliverOrder = async (req, res) => {
+
+	const orderId = req.params.id
+
+	if (!orderId) return res.status(400).send("Order id is required");
+
+	const order = await Order.findOne({
+		where: {
+			id: orderId,
+		},
+	});
+
+	if (!order) return res.status(404).send("Order not found");
+
+	order.order_status = "Delivered"
+	const newOrder = await order.save()
+
+	return res.status(200).json(newOrder);
+}
