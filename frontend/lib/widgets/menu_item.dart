@@ -6,8 +6,13 @@ import 'package:flutter_project/models/Item.dart';
 
 class FoodMenuItem extends StatelessWidget {
   final info;
-  final restaurant;
-  const FoodMenuItem({super.key, required this.info, required this.restaurant});
+  final menu;
+
+  const FoodMenuItem({
+    super.key,
+    required this.info,
+    required this.menu,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +26,12 @@ class FoodMenuItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                info["name"],
+                menu["name"],
                 style:
                     const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
               Text(
-                info["desc"],
+                menu["desc"],
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -36,13 +41,15 @@ class FoodMenuItem extends StatelessWidget {
             onTap: () => {
               context.read<CartBloc>().add(
                     AddItemToCart(
-                        item: Item(
-                          info["name"],
-                          info["desc"],
-                          info["price"],
-                          info["img"],
-                        ),
-                        restaurant: restaurant),
+                      item: Item(
+                        menu["name"],
+                        menu["desc"],
+                        menu["price"],
+                        menu["img"],
+                      ),
+                      restaurant: info["name"],
+                      address: info["address"],
+                    ),
                   ),
             },
             child: const Icon(
@@ -55,13 +62,15 @@ class FoodMenuItem extends StatelessWidget {
             onTap: () => {
               context.read<CartBloc>().add(
                     RemoveItemFromCart(
-                        item: Item(
-                          info["name"],
-                          info["desc"],
-                          info["price"],
-                          info["img"],
-                        ),
-                        restaurant: restaurant),
+                      item: Item(
+                        menu["name"],
+                        menu["desc"],
+                        menu["price"],
+                        menu["img"],
+                      ),
+                      restaurant: info["name"],
+                      address: info["address"],
+                    ),
                   ),
             },
             child: const Icon(
@@ -71,7 +80,7 @@ class FoodMenuItem extends StatelessWidget {
             ),
           ),
           Image(
-            image: AssetImage("images/${info["img"]}"),
+            image: AssetImage("images/${menu["img"]}"),
             fit: BoxFit.cover,
             height: MediaQuery.of(context).size.width / 4,
             width: MediaQuery.of(context).size.width / 4,

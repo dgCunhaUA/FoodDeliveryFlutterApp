@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/models/Order.dart';
 import 'package:flutter_project/screens/order_map.dart';
 import 'package:flutter_project/widgets/order_card.dart';
 
@@ -19,6 +20,11 @@ class Orders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Text("data");
+  }
+
+  /* @override
+  Widget build(BuildContext context) {
     return Card(
       child: Builder(builder: (context) {
         return ListView.builder(
@@ -28,19 +34,17 @@ class Orders extends StatelessWidget {
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => OrderMap(
-                          destinationAddress:
-                              item[index]['destination'] as String))),
+                      builder: (context) => OrderMap(order: Order()))),
               child: ListTile(
-                title: OrderCard(
+                  title: OrderCard(
                   item_info: item[index],
                   isValidated: isValidated,
                 ),
-              ),
+                  ),
             );
           },
         );
       }),
-    );
-  }
+    ); 
+  }*/
 }

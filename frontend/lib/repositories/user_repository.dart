@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_project/models/Item.dart';
 import 'package:flutter_project/utils/api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../models/Order.dart';
 import '../models/Rider.dart';
 import '../models/Client.dart';
 
@@ -233,6 +235,84 @@ class UserRepository {
     } on DioError catch (e) {
       print(e);
       throw Exception("Erro ao fazer upload");
+    }
+  }
+
+  Future<Order> createOrder(
+    //List<Item> items,
+    String restaurantName,
+    String restaurantAddress,
+  ) async {
+    try {
+      Client? client = await getClient();
+
+      final response = await _dio.post(
+        '$urlAPI/order/create',
+        data: {
+          'restaurant_name': restaurantName,
+          'restaurant_address': restaurantAddress,
+          "client_id": client!.id,
+          "client_name": client.name,
+          "client_address": client.address
+        },
+      );
+
+      if (response.statusCode == 201) {
+        Order order = Order.fromJson(response.data);
+
+        return order;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      throw Exception("Error");
+    }
+  }
+
+  Future<List<Order>> fetchOrders() async {
+    try {
+      Client? client = await getClient();
+
+      final response = await _dio.get(
+        '$urlAPI/order/client/${client!.id}/active',
+      );
+
+      List<Order> orders = [];
+      if (response.statusCode == 200) {
+        for (var data in response.data) {
+          orders.add(Order.fromJson(data));
+        }
+
+        return orders;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Error");
+    }
+  }
+
+  Future<List<Order>> fetchRiderOrders() async {
+    try {
+      Rider? rider = await getRider();
+
+      final response = await _dio.get(
+        '$urlAPI/order/rider/${rider!.id}',
+      );
+
+      List<Order> orders = [];
+      if (response.statusCode == 200) {
+        for (var data in response.data) {
+          orders.add(Order.fromJson(data));
+        }
+
+        print(orders);
+
+        return orders;
+      }
+      throw Exception("Error");
+    } on DioError catch (e) {
+      print(e);
+      throw Exception("Error");
     }
   }
 }

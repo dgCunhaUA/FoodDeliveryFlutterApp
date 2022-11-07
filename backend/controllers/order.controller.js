@@ -1,4 +1,7 @@
+const { Sequelize, DataTypes } = require("sequelize");
+
 const Order = require("../models/order.model");
+const Rider = require("../models/rider.model");
 
 exports.create = async (req, res) => {
 	try {
@@ -46,10 +49,13 @@ exports.create = async (req, res) => {
 
 exports.accept = async (req, res) => {
 	try {
-		const { order_id, rider_name, rider_lat, rider_lng, order_status } = req.body;
+		const { order_id, rider_name, rider_lat, rider_lng, order_status } =
+			req.body;
 
 		// Validate order input
-		if (!(order_id && rider_name && rider_lat && rider_lng && order_status)) {
+		if (
+			!(order_id && rider_name && rider_lat && rider_lng && order_status)
+		) {
 			res.status(400).send("All input is required");
 		}
 
@@ -64,7 +70,7 @@ exports.accept = async (req, res) => {
 			res.status(400).send("Order doesnt exist");
 		}
 
-		if(order.order_status != "Delivering") {
+		if (order.order_status != "Delivering") {
 			// Create order in our database
 			order.rider_name = rider_name;
 			order.rider_lat = rider_lat;
@@ -81,3 +87,74 @@ exports.accept = async (req, res) => {
 		console.log(err);
 	}
 };
+
+exports.getClientActiveOrders = async (req, res) => {
+	const clientId = req.params.id;
+
+	if (!clientId) return res.status(400).send("Client id is required");
+
+	const orders = await Order.findAll({
+		where: Sequelize.and(
+			{ client_id: clientId },
+			Sequelize.or(
+				{ order_status: "Delivering" },
+				{ order_status: "Waiting" }
+			)
+		),
+	});
+
+	return res.status(200).json(orders);
+};
+
+exports.getRiderOrders = async (req, res) => {
+	const riderId = req.params.id;
+
+	if (!riderId) return res.status(400).send("Rider id is required");
+
+	let rider = await Rider.findOne({
+		where: {id: riderId}
+	})
+
+	if(!rider) return res.status(400).send("Rider id is invalid");
+
+	let orders = await Order.findAll({
+		where: {
+			rider_name: rider.name,
+			order_status: "Delivering",
+		},
+	});
+
+	if (orders.length == 0)
+		orders = await Order.findAll({
+			where: Sequelize.and(
+				{ rider_name: null },
+				Sequelize.or(
+					{ order_status: "Delivering" },
+					{ order_status: "Waiting" }
+				)
+			),
+		});
+
+	return res.status(200).json(orders);
+};
+
+
+exports.deliverOrder = async (req, res) => {
+
+	const orderId = req.params.id
+
+	if (!orderId) return res.status(400).send("Order id is required");
+
+	const order = await Order.findOne({
+		where: {
+			id: orderId,
+		},
+	});
+
+	if (!order) return res.status(404).send("Order not found");
+
+	order.order_status = "Delivered"
+	const newOrder = await order.save()
+
+	return res.status(200).json(newOrder);
+}

@@ -3,14 +3,16 @@ part of 'cart_bloc.dart';
 enum CartStatus { empty, notEmpty }
 
 class CartState {
-  final List<Item> items;
-  final String restaurant;
+  List<Item> items;
+  String restaurant;
+  String address;
   CartManageStatus cartManageStatus;
   CartStatus cartStatus;
 
   CartState({
     required this.items,
     required this.restaurant,
+    required this.address,
     this.cartManageStatus = const CartInitialStatus(),
     this.cartStatus = CartStatus.empty,
   });
@@ -18,6 +20,7 @@ class CartState {
   CartState setCartManageStatus({required CartManageStatus cartManageStatus}) {
     return CartState(
       restaurant: restaurant,
+      address: address,
       items: items,
       cartManageStatus: cartManageStatus,
       cartStatus: cartStatus,
@@ -27,6 +30,7 @@ class CartState {
   CartState addItem({
     required Item item,
     required String restaurant,
+    required String address,
   }) {
     items.add(item);
 
@@ -44,6 +48,7 @@ class CartState {
 
     return CartState(
       restaurant: restaurant,
+      address: address,
       items: items,
       cartManageStatus: cartManageStatus,
       cartStatus: cartStatus,
@@ -69,9 +74,19 @@ class CartState {
 
     return CartState(
       restaurant: restaurant,
+      address: address,
       items: items,
       cartManageStatus: cartManageStatus,
       cartStatus: cartStatus,
     );
+  }
+
+  CartState reset() {
+    return CartState(
+        items: [],
+        restaurant: '',
+        address: '',
+        cartManageStatus: const CartInitialStatus(),
+        cartStatus: CartStatus.empty);
   }
 }

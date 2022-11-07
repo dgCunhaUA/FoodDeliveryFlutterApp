@@ -1,6 +1,6 @@
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_project/models/Order.dart';
 import 'package:flutter_project/screens/loading.dart';
-import 'package:flutter_project/utils/api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/widgets/order_card.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -8,21 +8,12 @@ import 'package:location/location.dart';
 
 import '../utils/directions_helper.dart';
 
-final item = [
-  {
-    'id': 'jpxcQ00rLy',
-    "price": 27.82,
-    "time": 26,
-    "distance": 4.7,
-    "restaurant": "La Grotta",
-    "destination": "Universidade de Aveiro, 3810-193 Aveiro"
-  }
-];
-
 class OrderMap extends StatefulWidget {
-  final destinationAddress;
+  //final String destinationAddress;
+  final Order order;
+  final bool isRider;
 
-  const OrderMap({super.key, this.destinationAddress});
+  const OrderMap({super.key, required this.order, required this.isRider});
 
   @override
   State<OrderMap> createState() => _OrderMapState();
@@ -41,12 +32,12 @@ class _OrderMapState extends State<OrderMap> {
   List<LatLng> polylineCoordinates = [];
   final List<LatLng> polyPoints = []; // For holding Co-ordinates as LatLng
   final Set<Polyline> polyLines = {}; // For holding instance of Polyline
-  var data;
   String destAdress = "null";
 
   @override
   void initState() {
-    destAdress = widget.destinationAddress;
+    //destAdress = widget.destinationAddress;
+    destAdress = widget.order.clientAddress;
 
     _getDestCoords();
 
@@ -133,10 +124,11 @@ class _OrderMapState extends State<OrderMap> {
           decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20)),
               color: Colors.white),
-          margin: EdgeInsets.fromLTRB(15, 0, 15, 70),
+          margin: const EdgeInsets.fromLTRB(15, 0, 15, 70),
           height: 320,
           child: OrderCard(
-            item_info: item[0],
+            order: widget.order,
+            isRider: widget.isRider, // TODO:
           ),
         );
       },
@@ -149,6 +141,7 @@ class _OrderMapState extends State<OrderMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: _currentPosition == null
           ? const LoadingScreen()
           : Stack(children: [
@@ -182,13 +175,13 @@ class _OrderMapState extends State<OrderMap> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 15),
+                    margin: const EdgeInsets.only(bottom: 15),
                     child: Center(
                       child: ElevatedButton(
                           onPressed: () {
                             showOrderModal();
                           },
-                          child: Text("Novos Pedidos (1)")),
+                          child: const Text("Novos Pedidos (1)")),
                     ),
                   ),
                 ],
